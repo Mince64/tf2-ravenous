@@ -1,0 +1,1318 @@
+// Made by Mince (STEAM_0:0:41588292)
+
+// Mission Currency
+// --------------------------
+// STARTING : $1200
+// --------------------------
+// WAVE 1   : $800  + B(100)
+// WAVE 2   : $700  + B(100)
+// WAVE 3   : $700  + B(100)
+// WAVE 4   : $600  + B(100)
+// WAVE 5   : $600  + B(100)
+// WAVE 6   : $400  + B(100)
+// --------------------------
+// TOTAL    : $5000 + B(600)
+
+
+#base robot_standard.pop
+#base robot_giant.pop
+#base robot_gatebot.pop
+
+// add bot attributes to robot_ravenous and delete the ones present in the map
+#base script_linkedmissions.pop
+#base robot_ravenous.pop
+
+WaveSchedule
+{
+	StartingCurrency 1200
+	RespawnWaveTime  4
+	CanBotsAttackWhileInSpawnRoom no
+	
+	// Bots / humans
+	BotsAreHumans        1
+	ForceRobotBleed      1
+	WaveStartCountdown   0
+
+	
+////// WAVE 1 [$0000] /////////////////////////////////////////////////////////
+	//
+	// Overview
+	//-------------------------------------------------
+	// 
+	//-------------------------------------------------
+	
+	Wave
+	{
+		InitWaveOutput
+		{
+			Target wave_initA_relay
+			Action Trigger
+		}
+		StartWaveOutput
+		{
+			Target wave_start_relay
+			Action Trigger
+		}
+		
+		// 8 Zombie Arm Scouts [$50]
+		WaveSpawn
+		{
+			Name  "W2-INIT-ZOMBIES"
+			Where spawnbot_gate02_invasion
+
+			TotalCount    64
+			MaxActive     1
+			SpawnCount    1
+			TotalCurrency 50
+			
+			WaitBeforeStarting 2
+			WaitBetweenSpawns  .25
+
+			TFBot { Class Heavy WeaponRestrictions MeleeOnly}
+		}
+	}
+
+////// WAVE 2 [$0000] /////////////////////////////////////////////////////////	
+	//
+	// Overview
+	//-------------------------------------------------
+	// 
+	//-------------------------------------------------
+	
+	Wave
+	{
+		InitWaveOutput
+		{
+			Target wave_initMain_relay
+			Action Trigger
+		}
+		StartWaveOutput
+		{
+			Target wave_start_relay
+			Action Trigger
+		}
+		DoneOutput
+		{
+			Target wave_start_relay
+			Action RunScriptCode
+			Param "
+				local tf_gamerules = Entities.FindByClassname(null, `tf_gamerules`);
+				EntFireByHandle(tf_gamerules,`RunScriptCode`,`SaveCurrentMission()`,5,null,null); // linked_missions.nut
+				EntFireByHandle(tf_gamerules,`$ChangeLevel`,`mvm_frostwynd_rc1|adv_ravenous`,5,null,null);
+			"
+		}
+		
+		// 32 Zombie Arm Scouts [$100]
+		WaveSpawn
+		{
+			Name  "W4-INIT-ZOMBIES"
+			Where spawnbot_main_invasion
+
+			TotalCount    32
+			MaxActive     32
+			SpawnCount    1
+			TotalCurrency 100
+			
+			WaitBeforeStarting 2
+			WaitBetweenSpawns  .25
+
+			TFBot { Template T_TFBot_Scout_Arm }
+		}
+	}
+
+////// SCOUT TEMPLATES ///////////////////////////////////////////////////////
+	Templates
+	{
+		T_TFBot_Scout_Sunstick
+		{
+			AddTemplate ZombieScout  
+			
+			Name  "Stunstick Scout"
+			ClassIcon scout_bat
+			WeaponRestrictions MeleeOnly
+			
+			Item "Sun-on-a-Stick"
+
+			ItemAttributes
+			{
+				ItemName "Sun-on-a-Stick"
+				"Set DamageType Ignite" 1
+			}
+		}
+		
+		T_TFBot_Scout_Milk
+		{
+			AddTemplate ZombieScout  
+			
+			Name  "Milk Scout"
+			ClassIcon scout_milk
+			Attributes AlwaysFireWeapon
+			WeaponRestrictions SecondaryOnly
+			
+			Item "Mad Milk"
+			Item "The Milkman"
+			
+			ItemAttributes
+			{
+				ItemName "Mad Milk"
+				"effect bar recharge rate increased" -2
+			}
+		}
+		
+		T_TFBot_Scout_Sword
+		{
+			AddTemplate ZombieScout  
+			
+			Name "Undead Pawn"
+			ClassIcon scout_threerune_daan
+			WeaponRestrictions MeleeOnly
+			
+			Item "The Dark Falkirk Helm"
+			Item "Three-Rune Blade"
+			
+			ItemAttributes
+			{
+				ItemName "Three-Rune Blade"
+				"hit self on miss"	0
+			}
+		}
+		
+		T_TFBot_Scout_Arm
+		{
+			AddTemplate ZombieScout  
+			
+			Name  "Zombie Arm Scout"
+			ClassIcon scout_bat
+			WeaponRestrictions MeleeOnly
+			Health 65
+			
+			Item "Unarmed Combat"
+		}
+		
+		T_TFBot_Scout_Mummy
+		{
+			AddTemplate ZombieScout  
+			
+			Name  "Cursed Mummy"
+			ClassIcon scout_bleed_wrap
+			MaxVisionRange 1024
+			WeaponRestrictions MeleeOnly
+			
+			Item "The Wrap Assassin"
+			Item "Wrap Battler"
+			Item "B-ankh!"
+			Item "Futankhamun"
+			
+			ItemAttributes
+			{
+				ItemName "The Wrap Assassin"
+				"damage penalty" 0.75
+				"effect bar recharge rate increased" 0.2
+			}
+			
+			FireWeapon  
+			{
+				Type        "Secondary"
+				Delay       0
+				Cooldown    2
+				Repeats     0
+				IfSeeTarget 1
+				Duration    0.1
+			}
+			
+			DamageAppliesCond  
+			{
+				Name     "TF_COND_MARKEDFORDEATH"
+				Duration 2
+			}
+		}
+		
+		T_TFBot_Scout_Ninja
+		{
+			AddTemplate ZombieScout  
+			
+			Name  "Ninja Scout"
+			ClassIcon demoknight_samurai
+
+			Attributes AutoJump
+			AutoJumpMin 3
+			AutoJumpMax 5
+			StripItemSlot 0
+			StripItemSlot 1
+			WeaponRestrictions MeleeOnly
+			Item "Three-Rune Blade"
+			
+			CharacterAttributes
+			{
+				"increased jump height" 2
+				"cancel falling damage" 1
+			}
+
+			ItemAttributes
+			{
+				ItemName "Three-Rune Blade"
+				"hit self on miss" 0
+			}
+			
+			CustomWeaponModel  
+			{
+				Slot 2
+				Model "models/weapons/c_models/c_shogun_katana/c_shogun_katana_soldier.mdl"
+			}
+		}
+		
+		//////////////////////////////////////////////////////////////////////
+		
+		T_TFBot_Giant_Scout_Arm
+		{
+			AddTemplate GiantZombieScout  
+			
+			Name  "Zombie Arm Scout"
+			ClassIcon scout_bat_giant
+			WeaponRestrictions MeleeOnly
+
+			Skill  Hard
+			Health 650
+			Item "Unarmed Combat"
+		}
+		
+		//////////////////////////////////////////////////////////////////////
+		
+		T_TFGateBot_Scout_Cola_Fish
+		{
+			AddTemplate ZombieScout  
+			AddTemplate GatebotScout  
+			
+			Name "Crit-a-Cola Scout"
+			ClassIcon scout_bonk
+			Health 65
+			Skill Normal
+			Attributes SpawnWithFullCharge
+			WeaponRestrictions MeleeOnly
+			
+			Item "Crit-a-Cola"
+			Item "The Holy Mackerel"
+		}
+		
+		T_TFGateBot_Scout_Bonk
+		{
+			AddTemplate ZombieScout  
+			AddTemplate GatebotScout  
+			
+			Name "Bonk Scout"
+			ClassIcon scout_bonk
+			Health 65
+			WeaponRestrictions MeleeOnly
+			Skill Normal
+			
+			EventChangeAttributes
+			{
+				Default { Item "Bonk! Atomic Punch" }
+				
+				// Prevent them from still having bonk
+				RevertGateBotsBehavior { Item "TF_WEAPON_PISTOL_SCOUT" }
+			}
+		}
+		
+////// SOLDIER TEMPLATES /////////////////////////////////////////////////////
+		
+		T_TFBot_Soldier_Shovel
+		{
+			AddTemplate ZombieSoldier  
+			
+			Name  "Shovel Soldier"
+			ClassIcon soldier_shovel
+			WeaponRestrictions MeleeOnly
+		}
+		
+		T_TFBot_Soldier_Zatoichi
+		{
+			AddTemplate ZombieSoldier  
+			
+			Name  "Half-Zatoichi Soldier"
+			ClassIcon demoknight_samurai
+			WeaponRestrictions MeleeOnly
+			
+			Item "The Half-Zatoichi"
+		}
+		
+		//////////////////////////////////////////////////////////////////////
+		
+		T_TFBot_MiniGiant_Soldier_Escape_Plan
+		{
+			AddTemplate ZombieSoldier  
+			
+			Name  "Escape Plan Soldier"
+			ClassIcon soldier_escape
+			WeaponRestrictions MeleeOnly
+
+			Scale  1.5
+			Health 750
+			
+			Item "The Escape Plan"
+			
+			CharacterAttributes
+			{
+				"move speed penalty" 0.85
+				"voice pitch scale" 0.5
+			}			
+		}
+		
+		T_TFBot_MiniGiant_Soldier_Conchtana
+		{
+			AddTemplate ZombieSoldier  
+			
+			Name  "Conchtana Soldier"
+			ClassIcon soldier_samurai_conch
+			WeaponRestrictions MeleeOnly
+
+			Health 750
+			Scale 1.5
+			Attributes SpawnWithFullCharge
+			
+            Item "Soldier Samurai Hat"
+            Item "The Concheror"
+            Item "The Half-Zatoichi"
+
+			CharacterAttributes
+			{
+				"move speed penalty" 0.85
+				"voice pitch scale" 0.5
+			}	
+			
+            ItemAttributes
+            {
+                ItemName "The Half-Zatoichi"
+                "honorbound" 0
+            }
+
+			ItemAttributes
+			{
+				ItemName "The Concheror"
+				"increase buff duration" 2.5
+				"deploy time decreased" 0.5
+			}
+		}
+		
+		//////////////////////////////////////////////////////////////////////
+		
+		T_TFBot_Giant_Soldier_Batana
+		{
+			AddTemplate GiantZombieSoldier  
+			
+			Name  "Giant Batana Soldier"
+			ClassIcon demoknight_samurai
+
+			Skill  Normal
+			Attributes SpawnWithFullCharge
+			WeaponRestrictions MeleeOnly
+			
+            Item "Soldier Samurai Hat"
+            Item "The Battalion's Backup"
+            Item "The Half-Zatoichi"
+			
+            ItemAttributes
+            {
+                ItemName "The Half-Zatoichi"
+                "honorbound" 0
+            }
+			
+			ItemAttributes
+			{
+				ItemName "The Battalion's Backup"
+				"increase buff duration" 2.5
+				"deploy time decreased" 0.5
+			}
+		}
+		
+		T_TFBot_Giant_Soldier_Bucket
+		{
+			AddTemplate GiantZombieSoldier  
+			
+			Name  "Giant Bucket Brain"
+			ClassIcon soldier_shovel_giant
+			WeaponRestrictions MeleeOnly
+			Skill  Normal
+			AimTrackingInterval 3  
+			
+			Item "Bucket Hat"
+
+			ItemAttributes
+			{
+				ItemName "TF_WEAPON_SHOVEL"
+				"damage bonus" 1.5
+			}
+		}
+		
+		//////////////////////////////////////////////////////////////////////
+		
+		T_TFGateBot_Soldier_Equalizer
+		{
+			AddTemplate ZombieSoldier  
+			AddTemplate GatebotSoldier  
+			
+			Name   "Equalizer Soldier"
+			ClassIcon soldier_equalizer
+			WeaponRestrictions MeleeOnly
+			Skill Normal
+			
+			Item "The Equalizer"
+		}
+		
+////// PYRO TEMPLATES ////////////////////////////////////////////////////////
+		
+		T_TFBot_Pyro_Axtinguisher
+		{
+			AddTemplate ZombiePyro  
+			
+			Name  "Axtinguisher Pyro"
+			ClassIcon pyro_axtinguisher
+			WeaponRestrictions MeleeOnly
+			
+			Item "The Axtinguisher"
+		}
+		
+		T_TFBot_Pyro_Powerjack
+		{
+			AddTemplate ZombiePyro  
+			
+			Name  "Powerjack Pyro"
+			ClassIcon pyro_powerjack
+			WeaponRestrictions MeleeOnly
+
+			Item "The Powerjack"
+		}
+		
+		T_TFBot_Pyro_Neon
+		{
+			AddTemplate ZombiePyro  
+			
+			Name  "Neon Annihilator Pyro"
+			ClassIcon pyro_neon
+			WeaponRestrictions MeleeOnly
+			
+			Item "The Neon Annihilator"
+		}
+		
+		T_TFBot_Pyro_Volcano
+		{
+			AddTemplate ZombiePyro  
+			
+			Name   "Volcano Fragment Pyro"
+			ClassIcon pyro_volcano
+			WeaponRestrictions MeleeOnly
+			
+			Item "Sharpened Volcano Fragment"
+		}
+		
+		//////////////////////////////////////////////////////////////////////
+		
+		T_TFBot_MiniGiant_Pyro_Axtinguisher
+		{
+			AddTemplate ZombiePyro  
+			Name  "Axtinguisher Pyro"
+			ClassIcon pyro_axtinguisher
+			WeaponRestrictions MeleeOnly
+			Scale  1.35
+			Health 650
+			
+			Item "The Axtinguisher"
+			
+			CharacterAttributes
+			{
+				"move speed penalty" 0.75
+				"voice pitch scale" 0.5
+			}		
+		}
+		
+		//////////////////////////////////////////////////////////////////////
+		
+		T_TFBot_Giant_Pyro_Neon
+		{
+			AddTemplate GiantZombiePyro  
+			
+			Name  "Giant Neon Annihilator Pyro"
+			ClassIcon pyro_neon
+			WeaponRestrictions MeleeOnly
+			
+			Item "The Neon Annihilator"	
+		}
+		
+		T_TFBot_Giant_Pyro_FireMage
+		{
+			AddTemplate GiantZombiePyro  
+			
+			Name  "Giant Fire Mage"
+			ClassIcon pyro_dragon_fury_swordstone
+
+			MaxVisionRange 2048
+			StripItemSlot  0
+			StripItemSlot  1
+			
+			Item "Point and Shoot"
+			Item "The Hot Hand"
+			Item "TF_WEAPON_SPELLBOOK"
+			
+			Spell  
+			{
+				Type     "Fireball"
+				Delay    4
+				Cooldown 12
+				Charges  1
+				Limit    2
+			}
+		}
+		
+		//////////////////////////////////////////////////////////////////////
+		
+		T_TFGateBot_Pyro_Powerjack
+		{
+			AddTemplate ZombiePyro  
+			AddTemplate GatebotPyro  
+			
+			Name   "Powerjack Pyro"
+			ClassIcon pyro_powerjack
+			WeaponRestrictions MeleeOnly
+					
+			Item "The Powerjack"
+		}
+		
+		T_TFGateBot_MiniGiant_Pyro_Powerjack
+		{
+			AddTemplate ZombiePyro  
+			AddTemplate GatebotPyro  
+			
+			Name   "Powerjack Pyro"
+			ClassIcon pyro_powerjack
+			WeaponRestrictions MeleeOnly
+			Health 650
+			Scale 1.35
+			
+			Item "The Powerjack"			
+		}
+		
+		T_TFGateBot_Giant_Pyro_Mage
+		{
+			Template T_TFBot_Giant_Pyro_FireMage
+			AddTemplate GatebotPyro  			
+		}
+
+////// DEMOMAN TEMPLATES /////////////////////////////////////////////////////		
+		
+		T_TFBot_Giant_Demoman_Cannon
+		{
+			AddTemplate GiantZombieDemoman  
+			
+			Name  "Giant Loose Cannon Demoman"
+			ClassIcon demo_cannon
+			WeaponRestrictions PrimaryOnly
+			
+			Item "The Loose Cannon"
+			
+			ItemAttributes
+			{
+				ItemName "The Loose Cannon"
+				"grenade launcher mortar mode"    -1
+				"projectile spread angle penalty" 10
+				"auto fires full clip"  1
+				"auto fires when full"  1
+				"fire rate bonus"       0.1
+				"reload time increased" 1.5
+				"clip size penalty"     0.75
+			}
+		}
+		
+		T_TFBot_Giant_Demoman_Wolf
+		{
+			AddTemplate GiantZombieDemoman  
+			
+			Name  "Giant Wolf Demoman"
+			ClassIcon demo_knight_bottle
+			WeaponRestrictions MeleeOnly
+			Health 2000
+			
+			Item "Hair of the Dog"
+			Item "Scottish Snarl"
+			Item "Pickled Paws"
+
+			ItemAttributes
+			{
+				ItemName "TF_WEAPON_BOTTLE"
+				"damage penalty" 0.4
+				"fire rate bonus" 0.5
+				"bleeding duration" 2
+			}
+			
+			CustomWeaponModel   //Sets custom weapon model
+			{
+				Slot 2
+				Model "models/empty.mdl"
+			}
+		}
+		
+		T_TFBot_Giant_Demoman_Skeleton
+		{
+			AddTemplate GiantZombieDemoman  
+			
+			Name  "Giant King Skeleton"
+			ClassIcon deader
+			Skill  Hard
+			Health 3300
+			MaxVisionRange 1024
+			
+			StripItemSlot  0
+			StripItemSlot  1
+			
+			Item "The Bat Outta Hell"
+			Item "Forgotten King's Restless Head"
+			Item "Forgotten King's Pauldrons"
+			Item "TF_WEAPON_SPELLBOOK"
+			
+			Spell  
+			{
+				Type        "Summon Skeletons"
+				Delay       6
+				Cooldown    18
+				Charges     1
+				Limit       1
+			}
+		}
+		
+		//////////////////////////////////////////////////////////////////////
+		
+		T_TFGateBot_Demoman_Knight
+		{
+			AddTemplate ZombieDemoman  
+			AddTemplate GatebotDemoman  
+			
+			Name "Demoknight"
+			ClassIcon demoknight
+			WeaponRestrictions MeleeOnly
+			MaxVisionRange 1024
+			
+			Item "The Chargin' Targe"
+			Item "The Eyelander"
+			
+			ItemAttributes
+			{
+				ItemName "The Eyelander"
+				"critboost on kill" 1
+			}
+		}
+		
+		//////////////////////////////////////////////////////////////////////
+		
+		T_TFAttrBot_Giant_Demoman_FireSword
+		{
+			AddTemplate GiantZombieDemoman  
+			Name   "Giant Fiery Demoknight"
+			Health 5000
+			ClassIcon  demoknight
+			WeaponRestrictions MeleeOnly
+			
+			Item "The Eyelander"
+			Item "The Dark Age Defender"
+			Item "The Glasgow Great Helm"
+			
+			ChangeAttributes  
+			{
+				Name    "Attr1"
+				Delay   0
+				Repeats 1
+				IfHealthBelow 2500
+			}
+
+			EventChangeAttributes
+			{
+				Default
+				{
+					CharacterAttributes
+					{
+						"move speed bonus" 0.5
+						"damage penalty" 0.5
+					}
+				}
+
+				Attr1
+				{
+					CharacterAttributes
+					{
+						"move speed bonus" 0.25
+						"damage penalty" 0.5
+					}
+					ItemAttributes
+					{
+						ItemName "The Eyelander"
+						"fire rate bonus" 0.6
+						"attach particle effect" 1
+						"Set DamageType Ignite" 1
+					}
+				}
+			}
+		}
+		
+////// HEAVY TEMPLATES ///////////////////////////////////////////////////////
+		
+		T_TFBot_Heavy_Fist
+		{
+			Template T_TFBot_Heavyweapons_Fist
+			AddTemplate ZombieHeavy  
+		}
+		
+		T_TFBot_Heavy_GRU
+		{
+			Template T_TFBot_Heavyweapons_Heavyweight_Champ_Fast
+			AddTemplate ZombieHeavy  
+		}
+		
+		T_TFBot_Heavy_KGB
+		{
+			Template T_TFBot_Heavyweapons_Heavyweight_Champ
+			AddTemplate ZombieHeavy  
+		}
+		
+		T_TFBot_Heavy_Bear
+		{
+			AddTemplate ZombieHeavy  
+			
+			Name  "Bear Heavy"
+			ClassIcon heavy_warrior
+			WeaponRestrictions MeleeOnly
+			
+			Item "Warrior's Spirit"
+			Item "The K-9 Mane"	
+		}
+		
+		//////////////////////////////////////////////////////////////////////
+		
+		T_TFBot_Giant_Heavy_Bear
+		{
+			AddTemplate GiantZombieHeavy  
+			
+			Name  "Giant Bear Heavy"
+			ClassIcon heavy_warrior_giant
+			WeaponRestrictions MeleeOnly
+			
+			Item "Warrior's Spirit"
+			Item "The K-9 Mane"	
+		}
+		
+		T_TFBot_Giant_Heavy_KGB
+		{
+			AddTemplate GiantZombieHeavy  
+			
+			Name  "Giant KGB Heavy"
+			ClassIcon heavy_champ_giant
+			WeaponRestrictions MeleeOnly
+			
+			Item "The Killing Gloves of Boxing"
+		}
+		
+		T_TFBot_Giant_Heavy_Wizard_Common
+		{
+			AddTemplate GiantZombieHeavy  
+			
+			Name  "Giant Common Wizard Heavy"
+			ClassIcon spellbook_lite
+			Scale  1.5 // Help prevent getting stuck from teleport spell
+			MaxVisionRange 2048
+			
+			StripItemSlot  0
+			StripItemSlot  1
+			
+			Item "Point and Shoot"
+			Item "TF_WEAPON_SPELLBOOK"
+			
+			Spell  
+			{
+				Type     "Common"
+				Delay    4
+				Cooldown 10
+				Charges  2
+				Limit    2
+			}
+		}
+		
+		T_TFBot_Giant_Heavy_Wizard_Rare
+		{
+			AddTemplate GiantZombieHeavy  
+			
+			Name  "Giant Rare Wizard Heavy"
+			ClassIcon spellbook_lite
+			MaxVisionRange 2048
+			
+			StripItemSlot  0
+			StripItemSlot  1
+			
+			Item "Point and Shoot"
+			Item "TF_WEAPON_SPELLBOOK"
+
+			ItemAttributes
+			{
+				ItemName "Point and Shoot"
+				"attach particle effect" 73
+			}
+			
+			Spell  
+			{
+				Type     "Rare"
+				Delay    4
+				Cooldown 20
+				Charges  1
+				Limit    1
+			}
+		}
+		
+		//////////////////////////////////////////////////////////////////////
+		
+		T_TFGateBot_Heavy_GRU
+		{
+			AddTemplate ZombieHeavy  
+			AddTemplate GatebotHeavy  
+			
+			Name   "GRU Heavy"
+			Scale  1.5
+			Health 900
+			ClassIcon heavy_gru
+			WeaponRestrictions MeleeOnly
+			
+			Item "Gloves of Running Urgently MvM"
+		}
+		
+		T_TFGateBot_MiniGiant_Heavy_KGB
+		{
+			AddTemplate ZombieHeavy  
+			AddTemplate GatebotHeavy  
+			
+			Name   "KGB Heavy"
+			Scale  1.5
+			Health 900
+			ClassIcon heavy_champ
+			WeaponRestrictions MeleeOnly
+			
+			Item "The Killing Gloves of Boxing"
+		}
+		
+		T_TFGateBot_MiniGiant_Heavy_Gauntlet
+		{
+			AddTemplate ZombieHeavy  
+			AddTemplate GatebotHeavy  
+			
+			Name   "Gauntlet Heavy"
+			Scale  1.5
+			Health 900
+			ClassIcon heavy_steelfist_nys
+			WeaponRestrictions MeleeOnly
+			
+			Item "Fists of Steel"		
+		}
+		
+		//////////////////////////////////////////////////////////////////////
+		
+		T_TFAttrBot_Giant_Heavy_Shotgun_Fist
+		{
+			AddTemplate GiantZombieHeavy  
+			Name   "Giant Shotgun Fist Heavy"
+			Health 7500
+			ClassIcon  heavy_champ_giant
+			Tag bot_attrbot
+			
+			Item "The Killing Gloves of Boxing"
+			
+			ItemAttributes
+			{
+				ItemName "The Killing Gloves of Boxing"
+				"damage bonus" 1.5
+			}
+
+			EventChangeAttributes
+			{
+				Default { WeaponRestrictions MeleeOnly }
+				
+				BotAttributes1 { WeaponRestrictions SecondaryOnly }
+				BotAttributes2 { WeaponRestrictions MeleeOnly }
+				BotAttributes3 { WeaponRestrictions SecondaryOnly }
+				BotAttributes4 { WeaponRestrictions MeleeOnly }
+			}		
+		}
+		
+////// MEDIC TEMPLATES ///////////////////////////////////////////////////////
+
+		T_TFBot_Medic_Kritz
+		{
+			AddTemplate ZombieMedic  
+			
+			Name "Kritzkrieg Medic"
+			ClassIcon medic_kritz
+			
+			Skill Expert
+			Attributes SpawnWithFullCharge
+			WeaponRestrictions SecondaryOnly
+			
+			Item "The Kritzkrieg"
+			Item "Titanium Tyrolean"
+			
+			ItemAttributes
+			{
+				ItemName "The Kritzkrieg"
+				"ubercharge rate bonus" 9999
+				"uber duration bonus" 9999
+			}
+			
+			CharacterAttributes
+			{
+				"bot medic uber health threshold" 9999
+			}
+		}
+		
+		T_TFBot_Medic_Crossbow
+		{
+			AddTemplate ZombieMedic  
+			
+			Name  "Crossbow Medic"
+			ClassIcon medic_crossbow
+
+			Skill Hard
+			Scale  1.35
+			Health 500
+			MaxVisionRange 4096
+			Attributes AlwaysFireWeapon
+			WeaponRestrictions PrimaryOnly
+			
+			Item "The Crusader's Crossbow"
+
+			CharacterAttributes
+			{
+				"move speed penalty" 0.75
+				"voice pitch scale" 0.5
+			}
+			
+			ItemAttributes
+			{
+				ItemName "The Crusader's Crossbow"
+				"damage bonus" 1.5
+			}
+		}
+		
+		//////////////////////////////////////////////////////////////////////
+		
+		T_TFBot_Giant_Medic_Kritz
+		{
+			AddTemplate GiantZombieMedic  
+			
+			Name "Kritzkrieg Medic"
+			ClassIcon medic_kritz_giant
+			
+			WeaponRestrictions SecondaryOnly
+			
+			Item "The Kritzkrieg"
+			Item "Titanium Tyrolean"
+			
+			ItemAttributes
+			{
+				ItemName "The Kritzkrieg"
+				"ubercharge rate bonus" 9999
+				"uber duration bonus" 9999
+			}
+			CharacterAttributes
+			{
+				"bot medic uber health threshold" 9999
+			}		
+		}
+		
+////// SNIPER TEMPLATES //////////////////////////////////////////////////////
+		
+		T_TFBot_Sniper_Skeleton
+		{
+			Name  "Skeleton"
+			Class Sniper
+			ClassIcon dead
+			WeaponRestrictions MeleeOnly
+			
+			Skin 2  
+			UseCustomModel "models/bots/skeleton_sniper/skeleton_sniper.mdl"  
+			
+			CharacterAttributes
+			{
+				"voice pitch scale" 0.5
+			}
+
+			CustomWeaponModel  
+			{
+				Slot 2
+				Model "models/empty.mdl"
+			}			
+		}
+		
+		T_TFBot_Sniper_Bushwacka
+		{
+			AddTemplate ZombieSniper  
+			
+			Name  "Bushwacka Sniper"
+			ClassIcon sniper_bushwacka
+			WeaponRestrictions MeleeOnly
+			
+			Item "The Bushwacka"
+		}
+		
+		T_TFBot_Sniper_Jarate
+		{
+			AddTemplate ZombieSniper  
+			
+			Name  "Jarate Sniper"
+			ClassIcon sniper_jarate
+			WeaponRestrictions SecondaryOnly
+			
+			Item "Jarate"
+			
+			StripItemSlot 0  
+			StripItemSlot 2  
+
+			ItemAttributes
+			{
+				ItemName "Jarate"
+				"effect bar recharge rate increased" 0.4
+			}
+		}
+		
+		//////////////////////////////////////////////////////////////////////
+		
+		T_TFBot_Giant_Sniper_Huntsman_Piss
+		{
+			AddTemplate GiantZombieSniper  
+			
+			Name  "Giant Piss Huntsman Sniper"
+			ClassIcon sniper_bow
+
+			MaxVisionRange 2048
+			WeaponRestrictions PrimaryOnly
+			
+			Item "The Huntsman"
+			
+			DamageAppliesCond  
+			{
+				Name     "TF_COND_URINE"
+				Duration 2
+			}
+		}
+		
+		T_TFBot_Giant_Sniper_Skeleton_Jarate
+		{
+			AddTemplate GiantZombieSniper  
+			
+			Name  "Giant Jarate Skeleton"
+			ClassIcon sniper_jarate
+
+			Attributes	AlwaysFireWeapon
+			MaxVisionRange 1024
+			WeaponRestrictions SecondaryOnly
+			
+			Item "Jarate"
+			
+			Skin 2  
+			UseCustomModel "models/bots/skeleton_sniper/skeleton_sniper.mdl"  
+			StripItemSlot 0  
+			StripItemSlot 2  
+			
+			ItemAttributes
+			{
+				ItemName "Jarate"
+				"effect bar recharge rate increased" -2
+			}
+		}
+		
+		T_TFAttrBot_Sniper_Huntsman_Bushwacka
+		{
+			Name   "Huntsman Sniper"
+			Class  Sniper
+			Scale  1.5
+			Health 750
+			ClassIcon sniper_bow
+			
+			Skill Hard
+			MaxVisionRange 2048
+			Tag  bot_attrbot
+			
+			Item "Zombie Sniper"
+			Item "The Huntsman"
+			Item "The Bushwacka"
+			Item "Jarate"
+			
+			ItemAttributes
+			{
+				ItemName "Jarate"
+				"effect bar recharge rate increased" 0.4
+			}
+			
+			CharacterAttributes
+			{
+				"move speed penalty" 0.75
+				"voice pitch scale" 0.5
+			}
+
+			EventChangeAttributes
+			{
+				Default { WeaponRestrictions PrimaryOnly }
+
+				BotAttributes1 { WeaponRestrictions SecondaryOnly }
+				BotAttributes2 { WeaponRestrictions MeleeOnly }
+				BotAttributes3 { WeaponRestrictions MeleeOnly }
+				BotAttributes4 { WeaponRestrictions MeleeOnly }
+			}
+		}
+	}
+	
+
+	PointTemplates  
+	{
+		// Fix some weird clipping
+		StuckFix
+		{
+			prop_dynamic
+			{
+				"angles" "0 45 0"
+				"origin" "6044 4291 528"
+				"body" "0"
+				"DisableBoneFollowers" "1"
+				"disablereceiveshadows" "1"
+				"disableshadows" "1"
+				"effects" "0"
+				"fademaxdist" "1"
+				"fademindist" "-1"
+				"fadescale" "1"
+				"model" "models/props_mining/support_wall001a.mdl"
+				"solid" "6"
+			}
+			prop_dynamic
+			{
+				"angles" "0 45 0"
+				"origin" "6134 4201 528"
+				"body" "0"
+				"DisableBoneFollowers" "1"
+				"disablereceiveshadows" "1"
+				"disableshadows" "1"
+				"effects" "0"
+				"fademaxdist" "1"
+				"fademindist" "-1"
+				"fadescale" "1"
+				"model" "models/props_mining/support_wall001a.mdl"
+				"solid" "6"
+			}
+			prop_dynamic
+			{
+				"angles" "0 45 0"
+				"origin" "6224 4111 528"
+				"body" "0"
+				"DisableBoneFollowers" "1"
+				"disablereceiveshadows" "1"
+				"disableshadows" "1"
+				"effects" "0"
+				"fademaxdist" "1"
+				"fademindist" "-1"
+				"fadescale" "1"
+				"model" "models/props_mining/support_wall001a.mdl"
+				"solid" "6"
+			}
+			prop_dynamic
+			{
+				"angles" "0 45 0"
+				"origin" "6314 4021 528"
+				"body" "0"
+				"DisableBoneFollowers" "1"
+				"disablereceiveshadows" "1"
+				"disableshadows" "1"
+				"effects" "0"
+				"fademaxdist" "1"
+				"fademindist" "-1"
+				"fadescale" "1"
+				"model" "models/props_mining/support_wall001a.mdl"
+				"solid" "6"
+			}
+			prop_dynamic
+			{
+				"angles" "0 45 0"
+				"origin" "6404 3931 528"
+				"body" "0"
+				"DisableBoneFollowers" "1"
+				"disablereceiveshadows" "1"
+				"disableshadows" "1"
+				"effects" "0"
+				"fademaxdist" "1"
+				"fademindist" "-1"
+				"fadescale" "1"
+				"model" "models/props_mining/support_wall001a.mdl"
+				"solid" "6"
+			}
+		}
+		
+		ResupplyCabinet
+		{
+			prop_dynamic
+			{
+				"targetname"     "locker_model"
+				"model"          "models/props_gameplay/resupply_locker.mdl"
+				"disableshadows" "1"
+				"solid"          "6"
+				"origin"         "16 0 0"
+				"angles"         "0 0 0"
+			}
+			
+			func_regenerate
+			{
+				"associatedmodel" "locker_model"
+				"filtername"      "filter_red"
+				"TeamNum"         "2"
+				"spawnflags"      "1"
+				"mins"            "0 -64 0"
+				"maxs"            "64 64 128"
+				
+				"OnStartTouch"    "locker_model,SetAnimation,open,0,-1"
+				"OnEndTouchAll"   "locker_model,SetAnimation,close,0,-1"
+			}
+		}
+		
+		Reverse
+		{
+			OnSpawnOutput
+			{
+				Target "spawn_relay"
+				Action Trigger
+			}
+			
+			logic_relay
+			{
+				"targetname" "spawn_relay"
+				"OnTrigger"  "spawnbot*,Kill,,0,-1"
+				"OnTrigger"  "teamspawn_red,Kill,,0,-1"
+				"OnTrigger"  "func_respawnroom,Kill,,0,-1"
+				"OnTrigger"  "func_respawnroomvisualizer,Kill,,0,-1"
+				"OnTrigger"  "player,$ForceRespawn,,0.01,-1"
+			}
+			
+			info_player_teamspawn
+			{
+				"targetname"    "teamspawn_humans"
+				"origin"        "2896 3728 1359"
+				"angles"        "0 45 0"
+				"TeamNum"       "3"
+				"StartDisabled" "0"
+			}
+		}
+	} // PointTemplates
+
+	SpawnTemplate "StuckFix"
+	//SpawnTemplate "Reverse"
+	
+	SpawnTemplate  
+	{
+		Name   "ResupplyCabinet"
+		Origin "3424 3404 1120"
+		Angles "0 -45 0"
+	}
+	SpawnTemplate  
+	{
+		Name   "ResupplyCabinet"
+		Origin "3108 3088 1120"
+		Angles "0 -45 0"
+	}
+}

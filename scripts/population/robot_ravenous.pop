@@ -1,0 +1,2398 @@
+// Made by Mince (STEAM_0:0:41588292)
+
+WaveSchedule
+{
+	// General
+	ForceHoliday           2 
+	NoReanimators          1
+	NoHolidayPickups       1
+	NoCritPumpkin          1
+	NoThrillerTaunt        1
+	NoRomevisionCosmetics  1
+	BotPushaway            0
+	BodyPartScaleSpeed     10
+	WaveStartCountdown     5
+	FixHuntsmanDamageBonus 1
+	
+	// Server
+	AllowBotExtraSlots 1
+	RobotLimit         48
+	MaxSpectators      9
+	
+	// NPCs
+	NoSkeletonSplit      1   
+	MaxActiveSkeletons   12  
+	FastNPCUpdate        1
+	NPCLagCompensation   1
+	
+	// Fix spell hud being hidden
+	BotsDropSpells       1   
+	GiantsDropRareSpells 1   
+	SpellDropRateCommon  0   
+	SpellDropRateGiant   0   
+	
+	// Assets
+	PrecacheModel "models/bots/skeleton_sniper/skeleton_sniper.mdl"
+	PrecacheModel "models/workshop/weapons/c_models/c_celtic_cleaver/c_demo_sultan_sword.mdl"
+	PrecacheModel "models/weapons/c_models/c_flintlock/c_ambassador.mdl"
+	PrecacheModel "models/capnkinky.mdl"
+	PrecacheModel "models/props_halloween/c_flask_florence/c_flask_florence.mdl"
+	PrecacheModel "models/weapons/c_models/c_soldier_arms_rocketless.mdl"	
+	
+	PrecacheSound "kinkyjump.wav"
+	
+	PrecacheSound "kinkyspree1.wav"
+	PrecacheSound "kinkyspree2.wav"
+	PrecacheSound "kinkyspree3.wav"
+	PrecacheSound "kinkyspree4.wav"
+	PrecacheSound "kinkyspree5.wav"
+	PrecacheSound "kinkyspree6.wav"
+	PrecacheSound "kinkyspree7.wav"
+	PrecacheSound "kinkyspree8.wav"
+	
+	PrecacheSound "kinkystart1.wav"
+	PrecacheSound "kinkystart2.wav"
+	PrecacheSound "kinkystart3.wav"
+	PrecacheSound "kinkystart4.wav"
+	PrecacheSound "kinkystart5.wav"
+	
+	PrecacheSound "kinkyrage1.wav"
+	PrecacheSound "kinkyrage2.wav"
+	
+	PrecacheSound "kinkydeath2.wav"
+	
+	
+	// Civilian
+	AllowCivilianClass 1   
+	ClassLimit  
+	{
+		Civilian 1
+	}
+	OverrideSounds  
+	{
+		Civilian.Death          "vo/soldier_painsevere03.mp3"
+		Civilian.CritDeath      "kinkydeath2.wav"
+		Civilian.MeleeDeath     "vo/soldier_painsevere03.mp3"
+		Civilian.ExplosionDeath "vo/soldier_painsharp03.mp3"
+	}
+	HandModelOverride  
+	{
+		Soldier "models/weapons/c_models/c_soldier_arms_rocketless.mdl"	
+		Civilian "models/weapons/c_models/c_soldier_arms.mdl"
+	}
+	
+	// Scripts
+	LuaScriptFile "ravenous_globals.lua"            
+	LuaScriptFile "ravenous_misc.lua"       
+	LuaScriptFile "ravenous_spells.lua"
+	LuaScriptFile "ravenous_display.lua"    
+	LuaScriptFile "ravenous_callbacks.lua"  
+	LuaScriptFile "ravenous_upgrades.lua"   
+
+	// Upgrades
+	CustomUpgradesFile "mvm_upgrades_ravenous.txt"  	
+	DisallowUpgrade  
+	{
+		Upgrade   "critboost on kill"
+		ClassName "saxxy"
+	}
+	DisallowUpgrade  
+	{
+		Upgrade   "critboost on kill"
+		ClassName "tf_weapon_katana"
+	}
+	DisallowUpgrade  
+	{
+		Upgrade   "critboost on kill"
+		ClassName "tf_weapon_sword"
+	}
+	DisallowUpgrade  
+	{
+		Upgrade   "critboost on kill"
+		ClassName "tf_weapon_bottle"
+	}
+	DisallowUpgrade  
+	{
+		Upgrade   "critboost on kill"
+		ClassName "tf_weapon_stickbomb"
+	}
+	DisallowUpgrade  
+	{
+		Upgrade   "mad milk syringes"
+		ClassName "tf_weapon_syringegun_medic"
+	}
+	DisallowUpgrade  
+	{
+		Upgrade  "projectile penetration"
+		ItemName "The Fortified Compound"
+	}
+	DisallowUpgrade
+	{
+		Upgrade "generate rage on heal"
+		ItemName "Health Redistributor"
+	}
+	DisallowUpgrade
+	{
+		Upgrade "canteen specialist"
+		ItemName "Health Redistributor"
+	}
+	DisallowUpgrade
+	{
+		Upgrade "critboost on kill"
+		ItemName "Battle Hatchet"
+	}
+	DisallowUpgrade
+	{
+		Upgrade "fire rate bonus"
+		ItemName "Flintlock Pistol"
+	}
+	DisallowUpgrade
+	{
+		Upgrade "applies snare effect"
+		ItemName "Mad Milk"
+	}
+	DisallowUpgrade
+	{
+		Upgrade "effect bar recharge rate increased"
+		ItemName "Mad Milk"
+	}
+	DisallowUpgrade
+	{
+		Upgrade "applies snare effect"
+		ItemName "Flask"
+	}
+	// For some reason this appears for demo's upgrades
+	DisallowUpgrade
+	{
+		Upgrade "damage bonus"
+		ItemName "Flask"
+	}
+	
+	ExtendedUpgrades 
+	{
+		// 1 - 1
+		upgrade_player_wizard_usemana
+		{
+			Name "Become a Mana-Using Wizard"
+			Attribute "zoom speed mod disabled"
+			Cap 1
+			Increment +1
+			Cost 0
+			PlayerUpgrade 1
+			AllowPlayerClass Engineer
+			DisallowedUpgrade { Upgrade "upgrade_player_wizard_userolls" }
+			
+			OnUpgrade { Output "popscript,$UpgradeWizardUseMana,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeWizardUseMana,2,0" }
+			OnRestore { Output "popscript,$UpgradeWizardUseMana,3,0" }
+		}
+		
+		// 1 - 2
+		upgrade_player_wizard_userolls
+		{
+			Name "Become a Random Spells Wizard"
+			Attribute "sniper no headshots"
+			Cap 1
+			Increment +1
+			Cost 800
+			PlayerUpgrade 1
+			AllowPlayerClass Engineer
+			DisallowedUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeWizardUseRolls,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeWizardUseRolls,2,0" }
+			OnRestore { Output "popscript,$UpgradeWizardUseRolls,3,0" }
+		}
+		
+		// 1 - 3
+		upgrade_spellbook_dummy
+		{
+			Name "------------------------------------------------------------"
+			Attribute "tag__eotlearlysupport"
+			Cap 0
+			Increment +0
+			Cost 0
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+		}
+		
+		// 1 - 4
+		upgrade_player_wizard_maxmana
+		{
+			Name "+25% Max Mana"
+			Attribute "tag__eotlearlysupport"
+			Cap 2
+			Increment +0.25
+			Cost 200
+			PlayerUpgrade 1
+			AllowPlayerClass Engineer
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeWizardMaxMana,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeWizardMaxMana,2,0" }
+			OnRestore { Output "popscript,$UpgradeWizardMaxMana,3,0" }
+		}
+		
+		// 1 - 5
+		upgrade_player_wizard_manaregen
+		{
+			Name "+5 Mana Regen Per Second"
+			Attribute "elevate to unusual if applicable"
+			Cap 25
+			Increment +5
+			Cost 250
+			PlayerUpgrade 1
+			AllowPlayerClass Engineer
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeWizardManaRegen,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeWizardManaRegen,2,0" }
+			OnRestore { Output "popscript,$UpgradeWizardManaRegen,3,0" }
+		}
+		
+		// 1 - 6
+		upgrade_spellbook_dummy
+		{
+			Name "------------------------------------------------------------"
+			Attribute "tag__eotlearlysupport"
+			Cap 0
+			Increment +0
+			Cost 0
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+		}
+		
+		// 1 - 7
+		upgrade_spellbook_dummy
+		{
+			Name "------------------------------------------------------------"
+			Attribute "tag__eotlearlysupport"
+			Cap 0
+			Increment +0
+			Cost 0
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+		}
+
+		// 2 - 1
+		upgrade_spellbook_commons_mana_cost
+		{
+			Name "-10% Common Spells Mana Cost"
+			Attribute "custom texture lo"
+			Cap 2
+			Increment +1
+			Cost 200
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeSpellbookCommonsManaCost,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeSpellbookCommonsManaCost,2,0" }
+			OnRestore { Output "popscript,$UpgradeSpellbookCommonsManaCost,3,0" }
+		}
+		
+		// 2 - 2
+		upgrade_spellbook_commons_roll_time
+		{
+			Name "-10% Common Spells Roll Time"
+			Attribute "cannot trade"
+			Cap 6
+			Increment +1
+			Cost 100
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeSpellbookCommonsRollTime,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeSpellbookCommonsRollTime,2,0" }
+			OnRestore { Output "popscript,$UpgradeSpellbookCommonsRollTime,3,0" }
+		}
+		
+		// 2 - 3
+		upgrade_spellbook_dummy
+		{
+			Name "------------------------------------------------------------"
+			Attribute "tag__eotlearlysupport"
+			Cap 0
+			Increment +0
+			Cost 0
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+		}
+
+		// 2 - 4
+		upgrade_spellbook_rares_mana_cost
+		{
+			Name "-10% Rare Spells Mana Cost"
+			Attribute "duel loser account id"
+			Cap 2
+			Increment +1
+			Cost 300
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeSpellbookRaresManaCost,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeSpellbookRaresManaCost,2,0" }
+			OnRestore { Output "popscript,$UpgradeSpellbookRaresManaCost,3,0" }
+		}
+		
+		// 2 - 5
+		upgrade_spellbook_rares_roll_time
+		{
+			Name "-10% Rare Spells Roll Time"
+			Attribute "event date"
+			Cap 2
+			Increment +1
+			Cost 300
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeSpellbookRaresRollTime,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeSpellbookRaresRollTime,2,0" }
+			OnRestore { Output "popscript,$UpgradeSpellbookRaresRollTime,3,0" }
+		}
+		
+		// 2 - 6
+		upgrade_spellbook_dummy
+		{
+			Name "------------------------------------------------------------"
+			Attribute "tag__eotlearlysupport"
+			Cap 0
+			Increment +0
+			Cost 0
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+		}
+		
+		// 2 - 7
+		upgrade_spellbook_dummy
+		{
+			Name "------------------------------------------------------------"
+			Attribute "tag__eotlearlysupport"
+			Cap 0
+			Increment +0
+			Cost 0
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+		}
+		
+		// 3 - 1
+		upgrade_spellbook_fireball
+		{
+			Name "Unlock Fireball [300 Mana]"
+			Attribute "DEPRECATED socketed item definition id DEPRECATED "
+			Cap 1
+			Increment +1
+			Cost 0
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeSpellbookUnlockFireball,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeSpellbookUnlockFireball,2,0" }
+			OnRestore { Output "popscript,$UpgradeSpellbookUnlockFireball,3,0" }
+		}
+		
+		// // 3 - 2
+		// upgrade_spellbook_ballobats
+		// {
+			// Name "Unlock Ball O' Bats [200 Mana]"
+			// Attribute "purchased"
+			// Cap 0
+			// Increment +0
+			// Cost 200
+			// AllowPlayerClass Engineer
+			// PlayerUpgrade 1
+			// RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			// OnUpgrade { Output "popscript,$UpgradeSpellbookUnlockBallobats,0,0" }
+			// OnDowngrade { Output "popscript,$UpgradeSpellbookUnlockBallobats,2,0" }
+			// OnRestore { Output "popscript,$UpgradeSpellbookUnlockBallobats,3,0" }
+		// }
+		
+		// 3 - 2
+		upgrade_spellbook_healingaura
+		{
+			Name "Unlock Healing Aura [400 Mana]"
+			Attribute "gifter account id"
+			Cap 1
+			Increment +1
+			Cost 400
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeSpellbookUnlockHealingaura,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeSpellbookUnlockHealingaura,2,0" }
+			OnRestore { Output "popscript,$UpgradeSpellbookUnlockHealingaura,3,0" }
+		}
+		
+		// 3 - 3
+		upgrade_spellbook_pumpkinmirv
+		{
+			Name "Unlock Pumpkin MIRV [300 Mana]"
+			Attribute "referenced item id high"
+			Cap 1
+			Increment +1
+			Cost 200
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeSpellbookUnlockPumpkinmirv,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeSpellbookUnlockPumpkinmirv,2,0" }
+			OnRestore { Output "popscript,$UpgradeSpellbookUnlockPumpkinmirv,3,0" }
+		}
+		
+		// 3 - 4
+		upgrade_spellbook_superjump
+		{
+			Name "Unlock Superjump [100 Mana]"
+			Attribute "halloween item"
+			Cap 1
+			Increment +1
+			Cost 0
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeSpellbookUnlockSuperjump,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeSpellbookUnlockSuperjump,2,0" }
+			OnRestore { Output "popscript,$UpgradeSpellbookUnlockSuperjump,3,0" }
+		}
+		
+		// 3 - 5
+		upgrade_spellbook_invisibility
+		{
+			Name "Unlock Invisibility [200 Mana]"
+			Attribute "force level display"
+			Cap 1
+			Increment +1
+			Cost 100
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeSpellbookUnlockInvisibility,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeSpellbookUnlockInvisibility,2,0" }
+			OnRestore { Output "popscript,$UpgradeSpellbookUnlockInvisibility,3,0" }
+		}
+		
+		// 3 - 6
+		upgrade_spellbook_teleport
+		{
+			Name "Unlock Teleport [300 Mana]"
+			Attribute "unique craft index"
+			Cap 1
+			Increment +1
+			Cost 200
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeSpellbookUnlockTeleport,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeSpellbookUnlockTeleport,2,0" }
+			OnRestore { Output "popscript,$UpgradeSpellbookUnlockTeleport,3,0" }
+		}
+		
+		// 3 - 7
+		upgrade_spellbook_minify
+		{
+			Name "Unlock Minify [300 Mana]"
+			Attribute "strange part new counter ID"
+			Cap 1
+			Increment +1
+			Cost 100
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeSpellbookUnlockMinify,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeSpellbookUnlockMinify,2,0" }
+			OnRestore { Output "popscript,$UpgradeSpellbookUnlockMinify,3,0" }
+		}
+		
+		// 4 - 1
+		upgrade_spellbook_teslabolt
+		{
+			Name "Unlock Tesla Bolt [2000 Mana]"
+			Attribute "unlimited quantity"
+			Cap 1
+			Increment +1
+			Cost 800
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeSpellbookUnlockTeslabolt,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeSpellbookUnlockTeslabolt,2,0" }
+			OnRestore { Output "popscript,$UpgradeSpellbookUnlockTeslabolt,3,0" }
+		}
+		
+		// 4 - 2
+		upgrade_spellbook_meteorshower
+		{
+			Name "Unlock Meteor Shower [2500 Mana]"
+			Attribute "pyro year number"
+			Cap 1
+			Increment +1
+			Cost 800
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeSpellbookUnlockMeteorshower,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeSpellbookUnlockMeteorshower,2,0" }
+			OnRestore { Output "popscript,$UpgradeSpellbookUnlockMeteorshower,3,0" }
+		}
+		
+		// 4 - 3
+		upgrade_spellbook_summonmonoculus
+		{
+			Name "Unlock Monoculus [1250 Mana]"
+			Attribute "zombiezombiezombiezombie"
+			Cap 1
+			Increment +1
+			Cost 600
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeSpellbookUnlockSummonmonoculus,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeSpellbookUnlockSummonmonoculus,2,0" }
+			OnRestore { Output "popscript,$UpgradeSpellbookUnlockSummonmonoculus,3,0" }
+		}
+		
+		// 4 - 4
+		upgrade_spellbook_summonskeletons
+		{
+			Name "Unlock Skeletons [1250 Mana]"
+			Attribute "strange restriction type 2"
+			Cap 1
+			Increment +1
+			Cost 600
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeSpellbookUnlockSummonmonskeletons,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeSpellbookUnlockSummonmonskeletons,2,0" }
+			OnRestore { Output "popscript,$UpgradeSpellbookUnlockSummonmonskeletons,3,0" }
+		}
+		
+		// 4 - 5
+		upgrade_spellbook_dummy
+		{
+			Name "------------------------------------------------------------"
+			Attribute "tag__eotlearlysupport"
+			Cap 0
+			Increment +0
+			Cost 0
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+		}
+		
+		// 4 - 6
+		upgrade_spellbook_dummy
+		{
+			Name "------------------------------------------------------------"
+			Attribute "tag__eotlearlysupport"
+			Cap 0
+			Increment +0
+			Cost 0
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+		}
+		
+		// 4 - 7
+		upgrade_spellbook_dummy
+		{
+			Name "------------------------------------------------------------"
+			Attribute "tag__eotlearlysupport"
+			Cap 0
+			Increment +0
+			Cost 0
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+		}
+		
+		// 5 - 1
+		upgrade_spellbook_custom_crocket
+		{
+			Name "Unlock Crocket! [500 Mana]"
+			Attribute "sniper no charge"
+			Cap 1
+			Increment +1
+			Cost 300
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeSpellbookUnlockCrocket,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeSpellbookUnlockCrocket,2,0" }
+			OnRestore { Output "popscript,$UpgradeSpellbookUnlockCrocket,3,0" }
+		}
+		
+		// 5 - 2
+		upgrade_spellbook_custom_crocket_homing
+		{
+			Name "Rocket Homes to Cursor"
+			Attribute "sticky detonate mode"
+			Cap 1
+			Increment +1
+			Cost 200
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+			RequiredUpgrade { Upgrade "upgrade_spellbook_custom_crocket" }
+		}
+		
+		// 5 - 3
+		upgrade_spellbook_custom_gravitybomb
+		{
+			Name "Gravity Bomb [2500 Mana]"
+			Attribute "strange restriction user value 1"
+			Cap 1
+			Increment +1
+			Cost 800
+			AllowPlayerClass Engineer
+			PlayerUpgrade 1
+			RequiredUpgrade { Upgrade "upgrade_player_wizard_usemana" }
+			
+			OnUpgrade { Output "popscript,$UpgradeSpellbookUnlockGravitybomb,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeSpellbookUnlockGravitybomb,2,0" }
+			OnRestore { Output "popscript,$UpgradeSpellbookUnlockGravitybomb,3,0" }
+		}
+		
+		// 1 - 1
+		upgrade_pyro_aoeblast_recharge_time
+		{
+			Name "-5s AOE Fireblast Recharge Time"
+			Attribute "ring of fire while aiming"
+			Cap 2
+			Increment +1
+			Cost 250
+			AllowPlayerClass Pyro
+			PlayerUpgrade 1
+			
+			OnUpgrade { Output "popscript,$UpgradePyroAOEBlast,0,0" }
+			OnDowngrade { Output "popscript,$UpgradePyroAOEBlast,2,0" }
+			OnRestore { Output "popscript,$UpgradePyroAOEBlast,3,0" }
+		}
+		
+		// 1 - 2
+		upgrade_pyro_aoeblast_duration
+		{
+			Name "+1s AOE Fireblast Duration"
+			Attribute "strange restriction value 2"
+			Cap 2
+			Increment +1
+			Cost 400
+			AllowPlayerClass Pyro
+			PlayerUpgrade 1
+			
+			OnUpgrade { Output "popscript,$UpgradePyroAOEBlastDuration,0,0" }
+			OnDowngrade { Output "popscript,$UpgradePyroAOEBlastDuration,2,0" }
+			OnRestore { Output "popscript,$UpgradePyroAOEBlastDuration,3,0" }
+		}
+		
+		// 1 - 1
+		upgrade_pyro_burn_time
+		{
+			Name "+25% Volcano Fragment Afterburn Speed"
+			Attribute "weapon burn time increased"
+			Cap 2
+			Increment +0.25
+			Cost 200
+			AllowPlayerClass Pyro
+			AllowedWeapons { ItemName "Sharpened Volcano Fragment" }
+		}
+		
+		// 1 - 2
+		upgrade_pyro_burn_damage
+		{
+			Name "+50% Volcano Fragment Afterburn Damage"
+			Attribute "weapon burn dmg increased"
+			Cap 3
+			Increment +0.5
+			Cost 200
+			AllowPlayerClass Pyro
+			AllowedWeapons { ItemName "Sharpened Volcano Fragment" }
+		}
+		
+		// 1 - 1
+		upgrade_demo_charge_damage
+		{
+			Name "+50% Shield Charge Damage"
+			Attribute "charge impact damage increased"
+			Cap 2.5
+			Increment +0.5
+			Cost 100
+			AllowPlayerClass Demoman
+			AllowedWeapons { ClassName "tf_wearable_demoshield" }
+		}
+		
+		// 1 - 1
+		upgrade_demo_hatchet_rechargetime
+		{
+			Name "-0.5s Hatchet Recharge Time"
+			Attribute "strange restriction user value 3"
+			Cap 4
+			Increment +1
+			Cost 250
+			AllowPlayerClass Demoman
+			AllowedWeapons { ItemName "Battle Hatchet" }
+			OnUpgrade { Output "popscript,$UpgradeDemoHatchetRechargeTime,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeDemoHatchetRechargeTime,2,0" }
+			OnRestore { Output "popscript,$UpgradeDemoHatchetRechargeTime,3,0" }
+		}
+		
+		// 1 - 1
+		upgrade_spy_backstab_smalls
+		{
+			Name "Backstab small bots"
+			Attribute "sniper independent zoom DISPLAY ONLY"
+			Cap 1
+			Increment +1
+			Cost 800
+			AllowPlayerClass Spy
+			PlayerUpgrade 1
+		}
+
+		// 1 - 1
+		upgrade_medic_flask_bleed
+		{
+			Name "Unlock Bleeding Flask"
+			Attribute "squad surplus claimer id DEPRECATED"
+			Cap 1
+			Increment +1
+			Cost 0
+			AllowPlayerClass Medic
+			AllowedWeapons { ItemName "Flask" }
+			OnUpgrade { Output "popscript,$UpgradeMedicFlaskBleeding,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeMedicFlaskBleeding,2,0" }
+			OnRestore { Output "popscript,$UpgradeMedicFlaskBleeding,3,0" }
+		}
+		
+		// 1 - 2
+		upgrade_medic_flask_heal_debuff
+		{
+			Name "Unlock Healing Debuff Flask"
+			Attribute "accepted wedding ring account id 1"
+			Cap 1
+			Increment +1
+			Cost 400
+			AllowPlayerClass Medic
+			AllowedWeapons { ItemName "Flask" }
+			OnUpgrade { Output "popscript,$UpgradeMedicFlaskHealDebuff,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeMedicFlaskHealDebuff,2,0" }
+			OnRestore { Output "popscript,$UpgradeMedicFlaskHealDebuff,3,0" }
+		}
+		
+		// 1 - 3
+		upgrade_medic_flask_longheal
+		{
+			Name "Unlock Long Heal Flask"
+			Attribute "tool escrow until date"
+			Cap 1
+			Increment +1
+			Cost 400
+			AllowPlayerClass Medic
+			AllowedWeapons { ItemName "Flask" }
+			OnUpgrade { Output "popscript,$UpgradeMedicFlaskLongHeal,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeMedicFlaskLongHeal,2,0" }
+			OnRestore { Output "popscript,$UpgradeMedicFlaskLongHeal,3,0" }
+		}
+		
+		// 1 - 4
+		upgrade_medic_flask_quickheal
+		{
+			Name "Unlock Quick Heal Flask"
+			Attribute "mvm completed challenges bitmask"
+			Cap 1
+			Increment +1
+			Cost 400
+			AllowPlayerClass Medic
+			AllowedWeapons { ItemName "Flask" }
+			OnUpgrade { Output "popscript,$UpgradeMedicFlaskQuickHeal,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeMedicFlaskQuickHeal,2,0" }
+			OnRestore { Output "popscript,$UpgradeMedicFlaskQuickHeal,3,0" }
+		}
+		
+		// 1 - 5
+		upgrade_medic_flask_uber
+		{
+			Name "Unlock Uber Flask"
+			Attribute "explosive sniper shot"
+			Cap 1
+			Increment +1
+			Cost 500
+			AllowPlayerClass Medic
+			AllowedWeapons { ItemName "Flask" }
+			OnUpgrade { Output "popscript,$UpgradeMedicFlaskUber,0,0" }
+			OnDowngrade { Output "popscript,$UpgradeMedicFlaskUber,2,0" }
+			OnRestore { Output "popscript,$UpgradeMedicFlaskUber,3,0" }
+		}
+	}
+	
+	// Allow use of weapons blocked by tf_logic_medieval
+	MedievalMode  0  
+	
+	CustomWeapon
+	{	
+		"Battle Hatchet"
+		{
+			OriginalItemName "Prinny Machete"
+			"custom item model" "models/workshop/weapons/c_models/c_celtic_cleaver/c_demo_sultan_sword.mdl"
+			"custom kill icon" "battleaxe"
+			"back headshot" 1 // Used to detect this in lua
+			"crit mod disabled" 0
+			"deploy time decreased" 0.7
+		}
+		
+		"Health Redistributor"
+		{
+			OriginalItemName "TF_WEAPON_MEDIGUN"
+			"custom item model" "models/weapons/c_models/c_pigeon_medigun/c_pigeon_medigun.mdl"
+			"deactive date" 1 // Used to detect this in lua
+			"medigun attack enemy" 2
+			"medigun self drain" 1
+			"health from healers reduced" 0.25
+			"ubercharge rate penalty" 0.5
+			"medigun charge is megaheal" 2
+		}
+		
+		"Flintlock Pistol"
+		{
+			OriginalItemName "The Ambassador"
+			"custom item model" "models/weapons/c_models/c_flintlock/c_ambassador.mdl"
+			"rj air bombardment" 1 // Used to detect this in lua
+			"clip size penalty" 0.1666
+			"Reload time increased" 2
+			"damage bonus" 2
+			"mult crit dmg" 1.5
+			
+		}
+		
+		"Flask"
+		{
+			OriginalItemName "Jarate"
+			"custom item model" "models/props_halloween/c_flask_florence/c_flask_florence.mdl"
+			"custom projectile model" "models/props_halloween/c_flask_florence/c_flask_florence.mdl"
+			"use original class weapon animations" 1
+			"use original class player animations" 1
+			"store sort override DEPRECATED" 1 // Used to detect this in lua
+			"effect cond override" 78 // TF_COND_MINICRITBOOSTED_ON_KILL (unused, we use it to clear jarate cond)
+			"effect bar recharge rate increased" 0.5
+		}
+	}
+	
+	ExtraLoadoutItems
+	{
+		Scout
+		{
+			Secondary "Flask"
+		}
+		Soldier
+		{
+			Secondary "Flask"
+		}
+		Pyro
+		{
+			Secondary "Flask"
+		}
+		Demoman
+		{
+			Melee "Battle Hatchet"
+			Secondary "Flask"
+		}
+		Heavyweapons
+		{
+			Secondary "The Robo-Sandvich"
+		}
+		Medic
+		{
+			Secondary "Health Redistributor"
+			Secondary "Flask"
+		}
+		Sniper
+		{
+			Secondary "Flask"
+		}
+		Spy
+		{
+			Secondary "Flintlock Pistol"
+			Secondary "Flask"
+		}
+	}
+	
+	
+////// BEGIN ATTRIBUTES //////////////////////////////////////////////////////
+	
+	
+	PlayerAttributes  
+	{
+		// Buff Soldier's banners
+		Soldier
+		{
+			"increase buff duration" 2
+			"mod rage on hit bonus"  25
+			"mod soldier buff range" 1.5
+		}
+		
+		// Increase Pyro's survivability a bit
+		Pyro
+		{
+			"dmg taken increased" 0.85
+			"fire retardant" 1
+			"max health additive bonus" 25
+		}
+		
+		// Increase Heavy's survivability
+		Heavy
+		{
+			"mult dmgtaken from melee" 0.5
+		}
+		
+		// ROCK AND STONE, BROTHER
+		Engineer
+		{
+			"model scale" 0.9
+			"torso scale" 0.8
+			"head scale"  1.4
+			"hand scale"  1.4
+		}
+		
+		// Increase Spy's survivability
+		Spy
+		{
+			"dmg taken increased" 0.75
+			"max health additive bonus" 25
+		}
+		
+		// Captain Kinky
+		Civilian
+		{
+			"max health additive bonus" 300
+			"critboost on kill" 2
+			"healing received penalty" 0.001
+			"min respawn time" 0
+			"cannot upgrade" 1
+			"move speed bonus" 1.6
+			"cancel falling damage" 1
+			"melee range multiplier" 1.25
+			"crit mod disabled hidden" 0
+			"damage force reduction" 0.25
+			"wet immunity" 1
+			"overheal penalty" 0.001
+		}
+	}
+	
+	
+	// Generic all-class melees
+	ItemAttributes  
+	{
+		Classname "saxxy"
+		"damage bonus" 1.3
+	}
+
+
+////// SCOUT /////////////////////////////////////////////////////////////////
+
+// Overall, Scout's changes increase his survivability and damage to
+// match the rest of the mercs output while retaining his support capabilities
+
+///////////// SECONDARIES ////////////////////////////////////////////////////
+
+	
+	// One-shots small bots
+	ItemAttributes  
+	{
+		ItemName "The Flying Guillotine"
+		"always crit"  1
+		"weapon always gib" 1
+		"dmg pierces resists absorbs" 1
+		"damage bonus" 60.006666 // (9001/150)
+		"mult dmg vs giants" 0.033329 // (1/60.006666) * 2
+		"bleeding duration" 0
+	}
+	
+	
+///////////// MELEES /////////////////////////////////////////////////////////
+
+
+	// Base
+	ItemAttributes  
+	{
+		SimilarToItem "TF_WEAPON_BAT" // + Festive Bat
+		"minicrits become crits" 1
+		"damage bonus" 1.5
+	}
+	
+	// Base
+	ItemAttributes  
+	{
+		ItemName "Upgradeable TF_WEAPON_BAT"
+		"minicrits become crits" 1
+		"damage bonus" 1.5
+	}
+	
+	// Base
+	ItemAttributes  
+	{
+		Classname "tf_weapon_bat_fish"
+		"minicrits become crits" 1
+		"damage bonus" 1.5
+	}
+	
+	// Stuns small bots, lower damage
+	ItemAttributes  
+	{
+		ItemName "The Sandman"
+		"fire rate penalty" 1.5
+		"damage bonus" 1.5
+		"stun on damage" 80 // .75 * (80/60) = 1
+		"max health additive penalty" 0
+	}
+	
+	// Higher ranged bleed damage, lower damage
+	ItemAttributes  
+	{
+		ItemName "The Wrap Assassin"
+		"damage penalty" 1
+		"damage bonus" 1.35
+		"mult bleeding dmg" 4
+	}
+	
+	// Increased survivability, lower damage
+	ItemAttributes  
+	{
+		ItemName "The Candy Cane"
+		"damage bonus" 1.35
+		"drop health pack on kill" 0
+		"dmg taken from blast increased" 1
+		"max health additive bonus" 75
+		"heal on hit for rapidfire" 10
+	}
+	
+	// Higher bleed damage, lower base damage
+	ItemAttributes  
+	{
+		ItemName "The Boston Basher"
+		"damage bonus" 1.35
+		"bleeding duration" 8
+		"mult bleeding dmg" 2
+		"dmg taken from self reduced" 0.5
+	}
+
+	// Higher bleed damage, lower base damage
+	ItemAttributes  
+	{
+		ItemName "Three-Rune Blade"
+		"damage bonus" 1.5
+		"bleeding duration" 8
+		"mult bleeding dmg" 2
+		"dmg taken from self reduced" 0.5
+	}
+
+	// Higher single target damage, lower base damage
+	ItemAttributes  
+	{
+		ItemName "Sun-on-a-Stick"
+		"Set DamageType Ignite" 1
+		"crit vs burning players" 1
+		"damage penalty" 1
+		"weapon burn time reduced" 0.2
+	}
+
+	// Mark targets, lower damage
+	ItemAttributes  
+	{
+		ItemName "The Fan O'War"
+		"damage penalty" 1
+	}
+	
+	// Higher damage mid-air, lower base damage, improves movement
+	ItemAttributes  
+	{
+		ItemName "The Atomizer"
+		"damage bonus" 1.35
+		"dmg penalty vs players" 1
+		"minicrits become crits" 1
+	}
+	
+	
+////// SOLDIER ///////////////////////////////////////////////////////////////
+
+// Overall, Soldier's changes increase his survivability and damage to
+// match the rest of the mercs output while retaining his support capabilities
+
+///////////// SECONDARIES ////////////////////////////////////////////////////
+
+	
+	// Indirectly helps survivability with some utility
+	ItemAttributes  
+	{
+		ItemName "The Mantreads"
+		"max health additive bonus" 75
+		"wet immunity" 1
+		"cancel falling damage" 1
+		"move speed bonus" 1.25
+	}
+	
+	// Direct damage resistances without the utility of The Mantreads
+	ItemAttributes  
+	{
+		ItemName "The Gunboats"
+		"mult dmgtaken from melee" 0.75 // 250 EH
+		"dmg from ranged reduced" 0.85 // 230 EH
+		"fire retardant" 1
+		"damage force reduction" 0.001
+	}
+	
+	ItemAttributes
+	{
+		ItemName "The B.A.S.E. Jumper"
+		"parachute redeploy" 1
+		"increased air control" 4
+		"allow bunny hop" 2
+	}
+	
+	
+///////////// MELEES /////////////////////////////////////////////////////////
+
+	
+	// Base
+	ItemAttributes  
+	{
+		SimilarToItem "TF_WEAPON_SHOVEL"
+		"damage bonus" 1.3
+	}
+	
+	// Base
+	ItemAttributes  
+	{
+		ItemName "Upgradeable TF_WEAPON_SHOVEL"
+		"damage bonus" 1.3
+	}
+	
+	// Higher damage when low health, higher survivability when low health
+	ItemAttributes  
+	{
+		ItemName "The Escape Plan"
+		"provide on active" 1
+		"move speed bonus" 1.2
+		"speed_boost_on_hit_enemy" 3
+		"mod shovel speed boost" 0
+		"mult crit when health is below percent" 0.3
+		"self mark for death" 0
+		"reduced_healing_from_medics" 1
+		"gesture speed increase" 2
+		"taunt attack time mult" 0.55
+	}
+	
+	// Much higher damage when low health
+	ItemAttributes  
+	{
+		ItemName "The Equalizer"
+		"mult crit when health is below percent" 0.75
+		"damage bonus" 2
+		"fire rate penalty" 1.3
+		"reduced_healing_from_medics" 1
+		"gesture speed increase" 1.4
+		"taunt attack time mult" 0.7
+	}
+	
+	// Slightly lower base damage, higher bleed damage, slight survivability increase
+	ItemAttributes  
+	{
+		ItemName "The Pain Train"
+		"dmg taken from bullets increased" 1
+		"max health additive bonus" 25
+		"bleeding duration" 5
+		"mult bleeding dmg" 2
+	}
+	
+	// Higher damage when chaining kills with CoK, lower base damage
+	ItemAttributes  
+	{
+		ItemName "The Half-Zatoichi"
+		"critboost on kill" 1
+		"damage penalty" 0.75
+	}
+	
+	// Stuns small bots, lower damage
+	ItemAttributes  
+	{
+		ItemName "The Disciplinary Action"
+		"always crit" 1
+		"mult crit dmg" 0.3333
+		"dmg pierces resists absorbs" 1
+		"crit forces victim to laugh" 1
+	}
+	
+	// Lower base damage, market garden
+	ItemAttributes  
+	{
+		ItemName "The Market Gardener"
+		"mult crit dmg" 2.5
+		"no crit boost" 1
+	}
+	
+	
+////// PYRO //////////////////////////////////////////////////////////////////
+
+// Overall, Pyro has small changes to his weapons to boost his damage output
+// closer to being on par with the rest of the mercs while retaining his
+// "crowd control" from the base game for the most part
+
+///////////// SECONDARIES ////////////////////////////////////////////////////
+
+	ItemAttributes  
+	{
+		ItemName "The Thermal Thruster"
+		"switch from wep deploy time decreased" 0.25
+	}
+
+///////////// MELEES /////////////////////////////////////////////////////////
+	
+	
+	// Base
+	ItemAttributes  
+	{
+		SimilarToItem "TF_WEAPON_FIREAXE"
+		"bleeding duration" 5
+		"damage bonus" 1.2
+	}
+	
+	// Base
+	ItemAttributes  
+	{
+		ItemName "Upgradeable TF_WEAPON_FIREAXE"
+		"bleeding duration" 5
+		"damage bonus" 1.2
+	}
+	
+	// Base
+	ItemAttributes  
+	{
+		ItemName "The Lollichop"
+		"bleeding duration" 5
+		"damage bonus" 1.2
+	}
+	
+	// Base
+	ItemAttributes  
+	{
+		ItemName "The Third Degree"
+		"bleeding duration" 5
+		"damage bonus" 1.2
+	}
+	
+	// Higher base damage and self sustain, reduced healing from healers
+	ItemAttributes  
+	{
+		ItemName "The Back Scratcher"
+		"damage bonus" 1.3
+		"max health additive bonus" 25
+	}
+	
+	// Ability to ignite enemies and benefit from afterburn upgrades
+	ItemAttributes  
+	{
+		ItemName "Sharpened Volcano Fragment"
+		"melee cleave attack" 1
+		"damage penalty" 0.85
+	}
+	
+	// This weapon is honestly just a meme, go slap some zombie ass yo
+	ItemAttributes  
+	{
+		ItemName "The Hot Hand"
+		"melee cleave attack" 1
+		"crit from behind" 1
+		"speed_boost_on_hit_enemy" 3
+		"speed buff ally" 1
+	}
+	
+	// Cleave stun, slower swing speed
+	ItemAttributes  
+	{
+		SimilarToItem "The Homewrecker" // + Maul
+		"melee cleave attack" 1
+		"stun on damage" 50 // 1.2 * (50/60) = 1
+		"fire rate penalty" 1.5
+		"dmg penalty vs players" 1
+	}
+	
+	// Higher damage vs multiple burning targets
+	ItemAttributes  
+	{
+		SimilarToItem "The Axtinguisher" // + Postal Pummeler, Festive Axtinguisher
+		"melee cleave attack" 1
+		"damage penalty" 1
+	}
+	
+	// Higher damage vs wet targets
+	ItemAttributes  
+	{
+		ItemName "The Neon Annihilator"
+		"wet immunity" 1
+		"dmg taken from crit reduced" 0.0001
+		"dmg penalty vs players" 1
+		"mult crit dmg" 1.5
+		"fire rate penalty" 1.3
+	}
+	
+	// Lower damage, higher survivability
+	ItemAttributes  
+	{
+		ItemName "The Powerjack"
+		"dmg taken increased" 0.85
+		"speed_boost_on_hit_enemy" 3
+		"max health additive bonus" 50
+		"damage penalty" 0.8
+	}
+	
+	
+////// DEMO //////////////////////////////////////////////////////////////////
+
+// Overall, Demo received a few changes to his weapons to allow all of them to
+// be viable options in relation to The Eyelander
+
+///////////// PRIMARIES //////////////////////////////////////////////////////
+
+	
+	// Increased health, slower move speed
+	ItemAttributes  
+	{
+		ItemName "The Bootlegger"
+		"max health additive bonus" 50
+		"move speed bonus shield required" 1
+		"move speed penalty" 0.8
+	}
+	
+	
+///////////// MELEES /////////////////////////////////////////////////////////
+
+	
+	// Base
+	ItemAttributes  
+	{
+		SimilarToItem "TF_WEAPON_BOTTLE"
+		"max health additive bonus" 20
+		"bleeding duration" 2
+		"mult bleeding dmg" 1.5
+		"mult crit dmg" 0.75
+	}
+	
+	// Base
+	ItemAttributes  
+	{
+		ItemName "Upgradeable TF_WEAPON_BOTTLE"
+		"max health additive bonus" 20
+		"bleeding duration" 2
+		"mult bleeding dmg" 1.5
+		"mult crit dmg" 0.75
+	}
+
+	// Increased melee range and bleed damage, lower health gain
+	ItemAttributes  
+	{
+		ItemName "The Claidheamohmor"
+		"fire rate bonus" 0.8
+		"bleeding duration" 5
+		"mult bleeding dmg" 3
+		"melee range multiplier" 2
+		"max health additive bonus" 10
+	}	
+	
+	// Melee cleave, lower base damage, lower health gain
+	ItemAttributes  
+	{
+		ItemName "The Persian Persuader"
+		"melee cleave attack" 1
+		"max health additive bonus" 10
+		"move speed bonus" 1.2
+	}
+
+	// Can random crit, no health gain
+	ItemAttributes  
+	{
+		ItemName "The Scotsman's Skullcutter"
+		"weapon always gib" 1
+		"dmg pierces resists absorbs" 1
+		"mult crit dmg" 0.75
+	}	
+
+	// KABOOOOOM
+	ItemAttributes  
+	{
+		ItemName "The Ullapool Caber"
+		"fire rate penalty" 1.5
+		"damage penalty" 0.5
+		"regenerate stickbomb" 1
+		"aoe blast on damage" 12.5 // 1.2 * (12.5/60) = .25
+		"cancel falling damage" 1
+		"self dmg push force decreased" 0.01
+	}
+	
+	
+////// HEAVY /////////////////////////////////////////////////////////////////
+
+// Overall, Heavy received a few changes to his weapons to allow all of them
+// to be viable options in relation to The Killing Gloves of Boxing
+
+///////////// SECONDARIES ////////////////////////////////////////////////////
+
+
+	ItemAttributes
+	{
+		ClassName "TF_WEAPON_LUNCHBOX"
+		"provide on active" 1
+		"gesture speed increase" 1.75
+	}
+
+
+///////////// MELEES /////////////////////////////////////////////////////////
+
+
+	// Base
+	ItemAttributes  
+	{
+		SimilarToItem "TF_WEAPON_FISTS"
+		"damage bonus" 1.3
+	}
+	
+	// Base
+	ItemAttributes  
+	{
+		ItemName "Upgradeable TF_WEAPON_FISTS"
+		"damage bonus" 1.3
+	}
+	
+	// Extremely increased survivability, lower damage
+	ItemAttributes  
+	{
+		ItemName "Fists of Steel"
+		"dmg taken increased" 0.75
+		"dmg from melee increased" 1
+	}
+	
+	// For the JoJos out there
+	ItemAttributes  
+	{
+		ItemName "The Eviction Notice"
+		"damage penalty" 0.7
+		"fire rate bonus" 0.5
+		"dmg taken increased" 0.85
+		"bleeding duration" 5
+		"mod_maxhealth_drain_rate" 0
+		"speed_boost_on_hit"  0
+		"speed_boost_on_kill" 1
+		"max health additive bonus" 50
+	}
+	
+	// Higher damage, slower swing speed, chance of increased survivability
+	ItemAttributes  
+	{
+		ItemName "Warrior's Spirit"
+		"damage bonus" 2.31 // 150
+		"crits_become_minicrits" 1
+		"fire rate penalty" 1.75
+		"teleport instead of die" 0.5
+	}
+
+	// Cleave stun, lower damage
+	ItemAttributes  
+	{
+		ItemName "The Holiday Punch"
+		"always crit" 1
+		"melee cleave attack" 1
+		"crit does no damage" 0
+		"damage penalty" 0.3
+	}
+	
+	// Lower damage, increased move speed and survivability
+	ItemAttributes  
+	{
+		SimilarToItem "Gloves of Running Urgently" // + Festive GRU
+		"dmg taken increased" 0.85
+		"mod_maxhealth_drain_rate" 0
+		"speed_boost_on_hit"  1
+	}
+	
+	// The man, the myth, the legend
+	ItemAttributes  
+	{
+		ItemName "The Killing Gloves of Boxing"
+		"critboost on kill" 1 // yeaaa, you don't need 5 seconds
+	}
+	
+	
+////// ENGINEER //////////////////////////////////////////////////////////////
+
+// Overall, aside from being a hairy wizard, Engie received some buffs to
+// his melee arsenal to make him a bit less useless outside of his spells
+
+///////////// MELEES /////////////////////////////////////////////////////////
+
+
+	// Base
+	ItemAttributes  
+	{
+		SimilarToItem "TF_WEAPON_WRENCH"
+		"critboost on kill" 1
+		"damage penalty" 0.8
+	}
+	
+	// Base
+	ItemAttributes  
+	{
+		ItemName "Upgradeable TF_WEAPON_WRENCH"
+		"critboost on kill" 1
+		"damage penalty" 0.8
+	}
+	
+	// Increased health, lower damage
+	ItemAttributes  
+	{
+		ItemName "The Gunslinger"
+		"max health additive bonus" 125
+		"damage bonus" 1.25
+	}
+	
+	// Lower damage, higher bleed damage
+	ItemAttributes  
+	{
+		ItemName "The Southern Hospitality"
+		"damage bonus" 1.5
+		"bleeding duration" 10
+		"mult bleeding dmg" 2
+		"dmg taken from fire increased" 1
+		"crit mod disabled" 1
+	}
+	
+	// Increased moved speed, lower damage
+	ItemAttributes  
+	{
+		ItemName "The Jag"
+		"damage penalty" 1
+		"damage bonus" 1.5
+		"fire rate bonus" 0.8
+		"move speed bonus" 1.2
+	}
+	
+	// Stuns small bots, lower damage
+	ItemAttributes  
+	{
+		ItemName "The Eureka Effect"
+		"stun on damage" 100 // .8 * (100/60) = 1
+		"melee cleave attack" 1
+		"damage bonus" 1.2
+	}
+	
+	
+////// MEDIC /////////////////////////////////////////////////////////////////
+
+// Overall, Medic received some changes to his balance to allow for a more
+// diverse choice of weapons outside of The Crusader's Crossbow and Amputator,
+// while increasing his damage output  to be closer to the other classes
+
+///////////// PRIMARIES //////////////////////////////////////////////////////
+
+
+	// Base
+	ItemAttributes  
+	{
+		ItemName "TF_WEAPON_SYRINGEGUN_MEDIC"
+		"damage bonus" 2
+	}
+	
+	// Base
+	ItemAttributes  
+	{
+		ItemName "Upgradeable TF_WEAPON_SYRINGEGUN_MEDIC"
+		"damage bonus" 2
+	}
+	
+	// Increased move speed and fire rate, lower damage
+	ItemAttributes  
+	{
+		ItemName "The Overdose"
+		"damage penalty" 1
+		"damage bonus" 1.5
+		"move speed bonus" 1.3
+		"fire rate bonus"  0.5
+	}
+	
+	// Lower damage, chance to aoe heal
+	ItemAttributes  
+	{
+		ItemName "The Blutsauger"
+		"aoe heal chance" 285.714 // .105 * (285.714/60) ~ .5
+	}
+	
+	
+///////////// MELEES /////////////////////////////////////////////////////////
+	
+	
+	// Base
+	ItemAttributes  
+	{
+		SimilarToItem "TF_WEAPON_BONESAW"
+		"fire rate bonus" 0.8
+		"health regen" 10
+	}
+	
+	// Base
+	ItemAttributes  
+	{
+		ItemName "Upgradeable TF_WEAPON_BONESAW"
+		"fire rate bonus" 0.8
+		"health regen" 10
+	}
+	
+	// Higher damage, less survivability
+	ItemAttributes  
+	{
+		SimilarToItem "The Ubersaw" // + Festive Ubersaw
+		"dmg taken increased" 1.15
+		"fire rate penalty" 1.3
+		"damage bonus" 1.75
+		"add uber charge on hit" 0
+	}
+	
+	// Lower damage, higher bleed damage, different survivability
+	ItemAttributes  
+	{
+		ItemName "The Vita-Saw"
+		"bleeding duration" 10
+		"max health additive penalty" 0
+		"max health additive bonus" 25
+	}
+	
+	// Highly lowered damage, chance to aoe heal, increased survivability
+	ItemAttributes  
+	{
+		ItemName "The Amputator"
+		"max health additive bonus" 50
+		"dmg taken increased" 0.9
+		"mult dmgtaken from melee" 0.8
+		"aoe heal chance" 75 // .8 * (75/60) = 1
+	}
+	
+	// Stuns small bots, does no damage
+	ItemAttributes  
+	{
+		ItemName "The Solemn Vow"
+		"damage penalty" 0.015
+		"stun on damage" 75 // .8 * (75/60) = 1
+		"single wep deploy time increased" 0.4
+	}
+	
+	
+////// SNIPER ////////////////////////////////////////////////////////////////
+
+// Overall, Sniper received some small changes to his arsenal to allow
+// for a more diverse selection of weapons aside from The Bushwacka and Jarate
+// while keeping his close range capabilities purposefully weak
+
+///////////// PRIMARIES //////////////////////////////////////////////////////
+
+
+	ItemAttributes  
+	{
+		ItemName "The Huntsman"
+		"damage penalty" 0.75
+		"projectile penetration limit" 3 // Hit 3 players max
+	}
+	
+	ItemAttributes  
+	{
+		ItemName "Festive Huntsman"
+		"damage penalty" 0.75
+		"projectile penetration limit" 3 // Hit 3 players max
+	}
+
+	ItemAttributes  
+	{
+		ItemName "The Fortified Compound"
+		// No projectile penetration upgrade
+		"projectile acceleration" 5000
+		"projectile acceleration time" 2
+		"projectile acceleration start time" 0.01
+		"grenade bounce speed" 1.5
+		"grenade bounce damage" 1
+		"hidden primary max ammo bonus" 0.9
+		"projectile lifetime" 1
+	}
+
+///////////// SECONDARIES ////////////////////////////////////////////////////
+
+
+	ItemAttributes  
+	{
+		ItemName "The Razorback"
+		"max health additive bonus" 50
+	}
+	
+	
+///////////// MELEES /////////////////////////////////////////////////////////
+
+
+	// Base
+	ItemAttributes  
+	{
+		SimilarToItem "TF_WEAPON_CLUB"
+		"damage bonus" 1.3
+	}
+
+	// Base
+	ItemAttributes  
+	{
+		ItemName "Upgradeable TF_WEAPON_CLUB"
+		"damage bonus" 1.3
+	}	
+	
+	// Lower base damage, higher bleed damage
+	ItemAttributes  
+	{
+		ItemName "The Tribalman's Shiv"
+		"damage penalty" 1
+		"bleeding duration" 10
+		"mult bleeding dmg" 2
+	}	
+	
+	// Melee cleave, small bleed damage, lower base damage
+	ItemAttributes  
+	{
+		ItemName "The Shahanshah"
+		"melee cleave attack" 1
+		"bleeding duration" 2
+	}
+
+
+////// SPY ///////////////////////////////////////////////////////////////////
+
+// Overall, Spy received some fundamental changes to his role in the team 
+// for the improvement of general game balance. In general, his ability to
+// fight (not sap) robots directly has been improved, while decreasing
+// his ability of being a giant killer by decreasing his armor penetration
+// upgrade cap by 2 ticks. His weaponry below plays on this new balance.
+
+///////////// PDA2 ///////////////////////////////////////////////////////////
+
+	
+	// Increased survivability from melee and ranged attacks
+	ItemAttributes  
+	{
+		SimilarToItem "TF_WEAPON_INVIS"
+		"max health additive bonus" 25
+		"dmg from ranged reduced" 0.9
+		"mult dmgtaken from melee" 0.80
+	}
+
+	// Increased survivability from melee and ranged attacks
+	ItemAttributes  
+	{
+		ItemName "Upgradeable TF_WEAPON_INVIS"
+		"max health additive bonus" 25
+		"dmg from ranged reduced" 0.9
+		"mult dmgtaken from melee" 0.80
+	}		
+	
+	// Increased survivability from melee and fire
+	ItemAttributes  
+	{
+		ItemName "The Cloak and Dagger"
+		"max health additive bonus" 50
+		"mult dmgtaken from melee" 0.9
+	}	
+	
+	
+///////////// MELEES /////////////////////////////////////////////////////////
+	
+	
+	// Base
+	ItemAttributes  
+	{
+		SimilarToItem "TF_WEAPON_KNIFE"
+		"closerange backattack minicrits" 1
+		"bleeding duration" 5
+		"mult bleeding dmg" 2
+		"damage bonus" 1.5
+		"mult dmg vs giants" 0.6666 // 100%
+		"mult dmg vs tanks" 0.6666  // 100%
+	}
+
+	// Base
+	ItemAttributes  
+	{
+		ItemName "Upgradeable TF_WEAPON_KNIFE"
+		"closerange backattack minicrits" 1
+		"bleeding duration" 5
+		"mult bleeding dmg" 2
+		"damage bonus" 1.5
+		"mult dmg vs giants" 0.6666 // 100%
+		"mult dmg vs tanks" 0.6666  // 100%
+	}		
+	
+	// Lower damage to small bots, higher damage to tanks
+	ItemAttributes  
+	{
+		ItemName "The Spy-cicle"
+		"closerange backattack minicrits" 1
+		"mult dmg vs tanks" 3.75 // 275%
+		"melts in fire" 0
+		"slow enemy on hit major" 1
+	}	
+	
+	// Higher damage to small bots, higher bleed damage, lower damage to giants,
+	// increased survivability
+	ItemAttributes  
+	{
+		ItemName "Your Eternal Reward"
+		"closerange backattack minicrits" 1
+		"bleeding duration" 10
+		"mult bleeding dmg" 3.5
+		"mult dmgtaken from melee" 0.75
+		"damage bonus" 2
+		"mult dmg vs giants" 0.25 // 50%
+		"mult dmg vs tanks" 0.25 // 50%
+		"set icicle knife mode" 0
+		"disguise on backstab" 0
+		"mod_disguise_consumes_cloak" 0
+	}	
+	
+	// Lower damage, highly increased survivability
+	ItemAttributes  
+	{
+		ItemName "Conniver's Kunai"
+		"closerange backattack minicrits" 1
+		"max health additive penalty" 0
+		"mult dmgtaken from melee" 0.85
+		"max health additive bonus" 20
+		"heal on hit for rapidfire" 15
+		"sanguisuge" 0
+	}
+	
+	// Highly lowered damage to small bots, increased move speed,
+	// higher damage to giants, decreased survivability
+	ItemAttributes  
+	{
+		ItemName "The Big Earner"
+		"closerange backattack minicrits" 1
+		"damage penalty" 0.75
+		"mult dmg vs giants" 1.6666 // 125%
+		"max health additive penalty" -50
+		"move speed bonus" 1.2
+	}
+	
+	Templates
+	{
+////// TEMPLATE MODULES //////////////////////////////////////////////////////
+
+		Zombie
+		{
+			Skill Hard
+			MaxVisionRange 512	
+			CharacterAttributes { "voice pitch scale" 0.7 }			
+		}
+
+		ZombieScout
+		{
+			AddTemplate Zombie
+			Class Scout
+			Item "Zombie Scout"
+		}
+		
+		ZombieSoldier
+		{
+			AddTemplate Zombie
+			Class Soldier
+			Item "Zombie Soldier"
+		}
+		
+		ZombiePyro
+		{
+			AddTemplate Zombie
+			Class Pyro
+			Item "Zombie Pyro"
+		}
+		
+		ZombieDemoman
+		{
+			AddTemplate Zombie
+			Class Demoman
+			Item "Zombie Demo"
+		}
+		
+		ZombieHeavy
+		{
+			AddTemplate Zombie
+			Class Heavy
+			Item "Zombie Heavy"
+		}
+		
+		ZombieEngineer
+		{
+			AddTemplate Zombie
+			Class Engineer
+			Item "Zombie Engineer"
+		}
+
+		ZombieMedic
+		{
+			AddTemplate Zombie
+			Class Medic
+			Item "Zombie Medic"
+		}
+		
+		ZombieSniper
+		{
+			AddTemplate Zombie
+			Class Sniper
+			Item "Zombie Sniper"
+		}
+		
+		ZombieSpy
+		{
+			AddTemplate Zombie
+			Class Spy
+			Item "Zombie Spy"
+		}
+
+		GiantZombieScout
+		{
+			Class Scout
+			Skill Expert
+			Health 1600
+			Attributes MiniBoss
+			MaxVisionRange 512
+			Tag bot_giant
+			
+			Item "Zombie Scout"
+
+			CharacterAttributes
+			{
+				"voice pitch scale" 0.5
+				"damage force reduction" 0.7
+				"airblast vulnerability multiplier" 0.7
+				"override footstep sound set" 5
+				"cancel falling damage" 1
+			}		
+		}
+		
+		GiantZombieSoldier
+		{
+			Class Soldier
+			Skill Expert
+			Health 3800
+			Attributes MiniBoss
+			MaxVisionRange 512
+			Tag bot_giant
+			
+			Item "Zombie Soldier"
+
+			CharacterAttributes
+			{
+				"voice pitch scale" 0.5
+				"move speed penalty" 0.5
+				"damage force reduction" 0.4
+				"airblast vulnerability multiplier" 0.4
+				"override footstep sound set" 3
+				"cancel falling damage" 1
+			}		
+		}
+		
+		GiantZombiePyro
+		{
+			Class Pyro
+			Skill Expert
+			Health 3000
+			Attributes MiniBoss
+			MaxVisionRange 512
+			Tag bot_giant
+			
+			Item "Zombie Pyro"
+
+			CharacterAttributes
+			{
+				"voice pitch scale" 0.5
+				"move speed penalty" 0.5
+				"damage force reduction" 0.6
+				"airblast vulnerability multiplier" 0.6
+				"override footstep sound set" 6
+				"cancel falling damage" 1
+			}		
+		}
+		
+		GiantZombieDemoman
+		{
+			Class Demoman
+			Skill Expert
+			Health 3300
+			Attributes MiniBoss
+			MaxVisionRange 512
+			Tag bot_giant
+			
+			Item "Zombie Demo"
+
+			CharacterAttributes
+			{
+				"voice pitch scale" 0.5
+				"move speed penalty" 0.5
+				"damage force reduction" 0.5
+				"airblast vulnerability multiplier" 0.5
+				"override footstep sound set" 4
+				"cancel falling damage" 1
+			}		
+		}
+		
+		GiantZombieHeavy
+		{
+			Class Heavy
+			Skill Expert
+			Health 5000
+			Attributes MiniBoss
+			MaxVisionRange 512
+			Tag bot_giant
+			
+			Item "Zombie Heavy"
+
+			CharacterAttributes
+			{
+				"voice pitch scale" 0.5
+				"move speed penalty" 0.5
+				"damage force reduction" 0.3
+				"airblast vulnerability multiplier" 0.3
+				"override footstep sound set" 2
+				"cancel falling damage" 1
+			}		
+		}
+		
+		GiantZombieEngineer
+		{
+			Class Engineer
+			Skill Expert
+			Health 2500
+			Attributes MiniBoss
+			MaxVisionRange 512
+			Tag bot_giant
+			
+			Item "Zombie Engineer"
+
+			CharacterAttributes
+			{
+				"voice pitch scale" 0.5
+				"move speed penalty" 0.7
+				"damage force reduction" 0.7
+				"airblast vulnerability multiplier" 0.7
+				"override footstep sound set" 5
+				"cancel falling damage" 1
+			}		
+		}
+		
+		GiantZombieMedic
+		{
+			Class Medic
+			Skill Expert
+			Health 4500
+			Attributes MiniBoss
+			Attributes SpawnWithFullCharge
+			Tag bot_giant
+			
+			Item "Zombie Medic"
+
+			CharacterAttributes
+			{
+				"voice pitch scale" 0.5
+				"move speed penalty" 0.5
+				"damage force reduction" 0.6
+				"airblast vulnerability multiplier" 0.6
+				"heal rate bonus" 200
+				"cancel falling damage" 1
+			}		
+		}
+		
+		GiantZombieSniper
+		{
+			Class Sniper
+			Skill Expert
+			Health 2500
+			Attributes MiniBoss
+			MaxVisionRange 512
+			Tag bot_giant
+			
+			Item "Zombie Sniper"
+
+			CharacterAttributes
+			{
+				"voice pitch scale" 0.5
+				"move speed penalty" 0.7
+				"damage force reduction" 0.7
+				"airblast vulnerability multiplier" 0.7
+				"override footstep sound set" 5
+				"cancel falling damage" 1
+			}		
+		}
+		
+		GiantZombieSpy
+		{
+			Class Spy
+			Skill Expert
+			Health 2500
+			Attributes MiniBoss
+			MaxVisionRange 512
+			Tag bot_giant
+			
+			Item "Zombie Spy"
+
+			CharacterAttributes
+			{
+				"voice pitch scale" 0.5
+				"move speed penalty" 0.7
+				"damage force reduction" 0.7
+				"airblast vulnerability multiplier" 0.7
+				"override footstep sound set" 5
+				"cancel falling damage" 1
+			}		
+		}
+		
+		GatebotScout
+		{			
+			Class Scout
+			Item "MvM GateBot Light Scout"
+			
+			EventChangeAttributes
+			{
+				Default
+				{
+					Attributes IgnoreFlag
+					BehaviorModifiers Push
+					Tag  nav_prefer_gate1_flank
+					Tag  bot_gatebot
+				}
+				
+				RevertGateBotsBehavior
+				{	
+					ItemAttributes
+					{
+						ItemName "MvM GateBot Light Scout"
+						"item style override" 1
+					}
+				}
+			}			
+		}
+
+		GatebotSoldier
+		{			
+			Class Soldier
+			Item "MvM GateBot Light Soldier"
+			
+			EventChangeAttributes
+			{
+				Default
+				{
+					Attributes IgnoreFlag
+					BehaviorModifiers Push
+					Tag  nav_prefer_gate1_flank
+					Tag  bot_gatebot
+				}
+				
+				RevertGateBotsBehavior
+				{	
+					ItemAttributes
+					{
+						ItemName "MvM GateBot Light Soldier"
+						"item style override" 1
+					}
+				}
+			}			
+		}
+		
+		GatebotPyro
+		{			
+			Class Pyro
+			Item "MvM GateBot Light Pyro"
+			
+			EventChangeAttributes
+			{
+				Default
+				{
+					Attributes IgnoreFlag
+					BehaviorModifiers Push
+					Tag  nav_prefer_gate1_flank
+					Tag  bot_gatebot
+				}
+				
+				RevertGateBotsBehavior
+				{	
+					ItemAttributes
+					{
+						ItemName "MvM GateBot Light Pyro"
+						"item style override" 1
+					}
+				}
+			}			
+		}
+		
+		GatebotDemoman
+		{			
+			Class Demoman
+			Item "MvM GateBot Light Demoman"
+			
+			EventChangeAttributes
+			{
+				Default
+				{
+					Attributes IgnoreFlag
+					BehaviorModifiers Push
+					Tag  nav_prefer_gate1_flank
+					Tag  bot_gatebot
+				}
+				
+				RevertGateBotsBehavior
+				{	
+					ItemAttributes
+					{
+						ItemName "MvM GateBot Light Demoman"
+						"item style override" 1
+					}
+				}
+			}			
+		}
+		
+		GatebotHeavy
+		{			
+			Class Heavy
+			Item "MvM GateBot Light Heavy"
+			
+			EventChangeAttributes
+			{
+				Default
+				{
+					Attributes IgnoreFlag
+					BehaviorModifiers Push
+					Tag  nav_prefer_gate1_flank
+					Tag  bot_gatebot
+				}
+				
+				RevertGateBotsBehavior
+				{	
+					ItemAttributes
+					{
+						ItemName "MvM GateBot Light Heavy"
+						"item style override" 1
+					}
+				}
+			}			
+		}
+		
+		GatebotEngineer
+		{			
+			Class Engineer
+			Item "MvM GateBot Light Engineer"
+			
+			EventChangeAttributes
+			{
+				Default
+				{
+					Attributes IgnoreFlag
+					BehaviorModifiers Push
+					Tag  nav_prefer_gate1_flank
+					Tag  bot_gatebot
+				}
+				
+				RevertGateBotsBehavior
+				{	
+					ItemAttributes
+					{
+						ItemName "MvM GateBot Light Engineer"
+						"item style override" 1
+					}
+				}
+			}			
+		}
+		
+		GatebotMedic
+		{			
+			Class Medic
+			Item "MvM GateBot Light Medic"
+			
+			EventChangeAttributes
+			{
+				Default
+				{
+					Attributes IgnoreFlag
+					BehaviorModifiers Push
+					Tag  nav_prefer_gate1_flank
+					Tag  bot_gatebot
+				}
+				
+				RevertGateBotsBehavior
+				{	
+					ItemAttributes
+					{
+						ItemName "MvM GateBot Light Medic"
+						"item style override" 1
+					}
+				}
+			}			
+		}
+		
+		GatebotSniper
+		{			
+			Class Sniper
+			Item "MvM GateBot Light Sniper"
+			
+			EventChangeAttributes
+			{
+				Default
+				{
+					Attributes IgnoreFlag
+					BehaviorModifiers Push
+					Tag  nav_prefer_gate1_flank
+					Tag  bot_gatebot
+				}
+				
+				RevertGateBotsBehavior
+				{	
+					ItemAttributes
+					{
+						ItemName "MvM GateBot Light Sniper"
+						"item style override" 1
+					}
+				}
+			}			
+		}
+		
+		GatebotSpy
+		{			
+			Class Spy
+			Item "MvM GateBot Light Spy"
+			
+			EventChangeAttributes
+			{
+				Default
+				{
+					Attributes IgnoreFlag
+					BehaviorModifiers Push
+					Tag  nav_prefer_gate1_flank
+					Tag  bot_gatebot
+				}
+				
+				RevertGateBotsBehavior
+				{	
+					ItemAttributes
+					{
+						ItemName "MvM GateBot Light Spy"
+						"item style override" 1
+					}
+				}
+			}			
+		}
+	}
+}

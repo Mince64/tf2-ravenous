@@ -1,0 +1,18 @@
+WaveSchedule
+{
+	PointTemplates [$SIGSEGV]
+	{
+		vscript
+		{
+			OnSpawnOutput
+			{
+				Target "tf_gamerules"
+				Action RunScriptFile
+				Param  "linked_missions"
+				Delay  0.0
+			}
+		}
+	}
+	
+	SpawnTemplate vscript [$SIGSEGV]
+}

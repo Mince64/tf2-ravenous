@@ -1,0 +1,141 @@
+// Made by Mince (STEAM_0:0:41588292)
+
+// Mission Currency
+// --------------------------
+// STARTING : $1200
+// --------------------------
+// WAVE 1   : $800  + B(100)
+// WAVE 2   : $700  + B(100)
+// WAVE 3   : $700  + B(100)
+// WAVE 4   : $600  + B(100)
+// WAVE 5   : $600  + B(100)
+// WAVE 6   : $400  + B(100)
+// --------------------------
+// TOTAL    : $5000 + B(600)
+
+
+#base robot_standard.pop
+#base robot_giant.pop
+#base robot_gatebot.pop
+
+#base script_linkedmissions.pop
+#base robot_ravenous.pop
+#base robot_winterbridge_rc6_ravenous.pop
+
+WaveSchedule
+{
+	StartingCurrency 1200
+	RespawnWaveTime  4
+	CanBotsAttackWhileInSpawnRoom no
+	
+	// Reverse
+	AllowJoinTeamBlue        1
+	AllowJoinTeamBlueMax     6
+	HumansMustJoinTeam       blue
+	SetCreditTeam            3
+	BluHumanFlagCapture      1
+	BluHumanFlagPickup       1
+	BluHumanInfiniteAmmo     0
+	BluHumanInfiniteCloak    0
+	RemoveBluVelocityLimit   1
+	NoBluHumanFootsteps      1
+	BotsUsePlayerTeleporters 0
+	
+	// Bots / humans
+	BotsAreHumans        1
+	ForceRobotBleed      1
+	BotHumansHaveEyeGlow 1
+	BluPlayersAreRobots  0
+
+	
+////// WAVE 1 [$0000] /////////////////////////////////////////////////////////
+	//
+	// Overview
+	//-------------------------------------------------
+	// 
+	//-------------------------------------------------
+	
+	Wave
+	{
+		InitWaveOutput
+		{
+			Target wave_initA_relay
+			Action Trigger
+		}
+		StartWaveOutput
+		{
+			Target wave_start_relay
+			Action Trigger
+		}
+		DoneOutput
+		{
+			Target wave_finished_relay
+			Action Trigger
+		}
+		
+		// 8 Zombie Arm Scouts [$50]
+		WaveSpawn
+		{
+			Name  "W2-INIT-ZOMBIES"
+			Where spawnbot_ab
+
+			TotalCount    8
+			MaxActive     8
+			SpawnCount    1
+			TotalCurrency 50
+			
+			WaitBeforeStarting 2
+			WaitBetweenSpawns  .25
+
+			TFBot { Template T_TFBot_Scout_Arm }
+		}
+	}
+
+////// WAVE 2 [$0000] /////////////////////////////////////////////////////////	
+	//
+	// Overview
+	//-------------------------------------------------
+	// 
+	//-------------------------------------------------
+	
+	Wave
+	{
+		InitWaveOutput
+		{
+			Target wave_initA_relay
+			Action Trigger
+		}
+		StartWaveOutput
+		{
+			Target wave_start_relay
+			Action Trigger
+		}
+		DoneOutput
+		{
+			Target wave_finished_relay
+			Action Trigger
+		}
+		
+		// 32 Zombie Arm Scouts [$100]
+		WaveSpawn
+		{
+			Name  "W4-INIT-ZOMBIES"
+			Where spawnbot_ab
+
+			TotalCount    32
+			MaxActive     32
+			SpawnCount    1
+			TotalCurrency 100
+			
+			WaitBeforeStarting 2
+			WaitBetweenSpawns  .25
+
+			TFBot { Template T_TFBot_Scout_Arm }
+		}
+	}
+
+	Templates
+	{
+
+	}
+}
