@@ -1,6 +1,6 @@
 -- Not limited by midwave restrictions
 -- Pick any spell regardless of upgrade unlocks
-debug = false;
+debug = true;
 
 precache.PrecacheModel("models/capnkinky.mdl", true);
 precache.PrecacheModel("models/workshop/weapons/c_models/c_celtic_cleaver/c_demo_sultan_sword.mdl", true);
@@ -102,45 +102,43 @@ SPELL_CUSTOM_CROCKET     = 16;
 SPELL_CUSTOM_GRAVITYBOMB = 17;
 
 spell_rng_common_chances = {
-    [SPELL_FIREBALL]       = { roll_chance=0.5,  charge_chances = {0.2, 0.7, 0.07, 0.03} },
-    [SPELL_HEALINGAURA]    = { roll_chance=0.2,  charge_chances = {0.4, 0.5, 0.1,      } },
-    [SPELL_PUMPKINMIRV]    = { roll_chance=0.15, charge_chances = {0.7, 0.2, 0.1,      } },
-    [SPELL_CUSTOM_CROCKET] = { roll_chance=0.15, charge_chances = {0.7, 0.2, 0.1,      } },
+	[SPELL_FIREBALL]       = { roll_chance=0.5,  charge_chances = {0.2, 0.7, 0.07, 0.03} },
+	[SPELL_HEALINGAURA]    = { roll_chance=0.2,  charge_chances = {0.4, 0.5, 0.1,      } },
+	[SPELL_PUMPKINMIRV]    = { roll_chance=0.15, charge_chances = {0.7, 0.2, 0.1,      } },
+	[SPELL_CUSTOM_CROCKET] = { roll_chance=0.15, charge_chances = {0.7, 0.2, 0.1,      } },
 };
 
 spell_rng_rare_chances = {
-    [SPELL_SUMMONSKELETONS]    = { roll_chance=0.5,  charge_chances = {0.9, 0.1,} },
-    [SPELL_SUMMONMONOCULUS]    = { roll_chance=0.3,  charge_chances = {0.9, 0.1,} },
-    [SPELL_METEORSHOWER]       = { roll_chance=0.10, charge_chances = {1        } },
-    [SPELL_TESLABOLT]          = { roll_chance=0.05, charge_chances = {1        } },
-    [SPELL_CUSTOM_GRAVITYBOMB] = { roll_chance=0.05, charge_chances = {1        } },
+	[SPELL_SUMMONSKELETONS]    = { roll_chance=0.5,  charge_chances = {0.9, 0.1,} },
+	[SPELL_SUMMONMONOCULUS]    = { roll_chance=0.3,  charge_chances = {0.9, 0.1,} },
+	[SPELL_METEORSHOWER]       = { roll_chance=0.10, charge_chances = {1        } },
+	[SPELL_TESLABOLT]          = { roll_chance=0.05, charge_chances = {1        } },
+	[SPELL_CUSTOM_GRAVITYBOMB] = { roll_chance=0.05, charge_chances = {1        } },
 };
 
 
 spell_projectile_class_map = {
-    tf_projectile_spellfireball          = SPELL_FIREBALL,
-    tf_projectile_spellbats              = SPELL_BALLOBATS,
-    tf_projectile_spellmirv              = SPELL_PUMPKINMIRV,
-    tf_projectile_spelltransposeteleport = SPELL_TELEPORT,
-    tf_projectile_lightningorb           = SPELL_TESLABOLT,
-    tf_projectile_spellmeteorshower      = SPELL_METEORSHOWER,
-    tf_projectile_spellspawnboss         = SPELL_SUMMONMONOCULUS,
-    tf_projectile_spellspawnhorde        = SPELL_SUMMONSKELETONS,
-    tf_projectile_spellkartorb           = SPELL_KARTBOXINGROCKET,
+	tf_projectile_spellfireball          = SPELL_FIREBALL,
+	tf_projectile_spellbats              = SPELL_BALLOBATS,
+	tf_projectile_spellmirv              = SPELL_PUMPKINMIRV,
+	tf_projectile_spelltransposeteleport = SPELL_TELEPORT,
+	tf_projectile_lightningorb           = SPELL_TESLABOLT,
+	tf_projectile_spellmeteorshower      = SPELL_METEORSHOWER,
+	tf_projectile_spellspawnboss         = SPELL_SUMMONMONOCULUS,
+	tf_projectile_spellspawnhorde        = SPELL_SUMMONSKELETONS,
+	tf_projectile_spellkartorb           = SPELL_KARTBOXINGROCKET,
 };
 
 FLASK_NONE        = 0;
 FLASK_BLEED       = 1;
 FLASK_HEAL_DEBUFF = 2;
-FLASK_LONGHEAL    = 3;
-FLASK_QUICKHEAL   = 4;
-FLASK_UBER        = 5;
+FLASK_QUICKHEAL   = 3;
+FLASK_UBER        = 4;
 
 flask_name_map = {
 	[FLASK_NONE]        = "None",
 	[FLASK_BLEED]       = "Bleeding [Enemies]",
 	[FLASK_HEAL_DEBUFF] = "Healing Debuff [Enemies]",
-	[FLASK_LONGHEAL]    = "Long Heal [Allies]",
 	[FLASK_QUICKHEAL]   = "Quick Heal [Allies]",
 	[FLASK_UBER]        = "Übercharge [Allies]",
 };
@@ -175,19 +173,19 @@ kinky_maxdmgatcurrency = 4500;
 -- Lua isn't able to spawn point_worldtext for some reason
 VSCRIPT_RESPAWN_TEXT = [[
 SpawnEntityFromTable("point_worldtext", {
-    targetname  = "kinky_respawn_text",
-    origin      = "-4674 -5920 -1940",
-    color       = "255 255 255",
-    textsize    = 18,
-    orientation = 2,
+	targetname  = "kinky_respawn_text",
+	origin      = "-4674 -5920 -1940",
+	color       = "255 255 255",
+	textsize    = 18,
+	orientation = 2,
 });
 
 SpawnEntityFromTable("point_worldtext", {
-    targetname  = "kinky_respawn_text2",
-    origin      = "-4674 -5920 -1965",
-    color       = "30 210 60",
-    textsize    = 18,
-    orientation = 2,
+	targetname  = "kinky_respawn_text2",
+	origin      = "-4674 -5920 -1965",
+	color       = "30 210 60",
+	textsize    = 18,
+	orientation = 2,
 });
 ]];
 
@@ -249,6 +247,7 @@ TAG_ITEMNAME  = "hp_itemname";
 
 TAG_ITEMPOS   = "hp_itempos";
 TAG_ITEMANG   = "hp_itemang";
+TAG_ITEMSCALE = "hp_itemscale";
 
 TAG_COSMETICS = "hp_cosmetics";
 

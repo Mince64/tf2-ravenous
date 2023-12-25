@@ -4,12 +4,12 @@
 
 -- Round a number
 math.round = function(num, decimals)
-    if (not decimals or decimals <= 0) then
-        return math.floor(num + 0.5);
-    else
-        local mod = 10 ^ decimals;
-        return math.floor((num * mod) + 0.5) / mod;
-    end
+	if (not decimals or decimals <= 0) then
+		return math.floor(num + 0.5);
+	else
+		local mod = 10 ^ decimals;
+		return math.floor((num * mod) + 0.5) / mod;
+	end
 end
 
 -- Round to nearest divisible
@@ -27,7 +27,7 @@ end
 
 -- Get the integer value for an rgb value
 math.rgbtoint = function(red, green, blue)
-    return (red << 16) + (green << 8) + blue
+	return (red << 16) + (green << 8) + blue
 end
 
 -- Random float
@@ -81,91 +81,91 @@ end
 
 -- Set entity attributes
 CEntity.SetAttributeValues = function(self, attributes)
-    if (IsValid(self)) then
-        for attr, val in pairs(attributes) do
-            self:SetAttributeValue(attr, val);
-        end
-    end
+	if (IsValid(self)) then
+		for attr, val in pairs(attributes) do
+			self:SetAttributeValue(attr, val);
+		end
+	end
 end
 
 -- Set model scale over time
 CEntity.SetModelScale = function(self, scale, over_time, increment)
-    if (not IsValid(self)) then return; end
+	if (not IsValid(self)) then return; end
 
-    if (over_time and over_time > 0) then
-        if (not increment or increment <= 0) then increment = 0.01; end
-        local current_scale = self.m_flModelScale;
+	if (over_time and over_time > 0) then
+		if (not increment or increment <= 0) then increment = 0.01; end
+		local current_scale = self.m_flModelScale;
 
-        if (scale - current_scale == 0) then
-            return;
-        elseif (scale - current_scale < 0) then
-            increment = -increment;
-        end
+		if (scale - current_scale == 0) then
+			return;
+		elseif (scale - current_scale < 0) then
+			increment = -increment;
+		end
 
-        local exec_times    = math.floor(math.abs((scale - current_scale) / increment));
-        local counter       = 0;
-        timer.Create(over_time / exec_times, function()
-            if (not IsValid(self)) then return; end
+		local exec_times    = math.floor(math.abs((scale - current_scale) / increment));
+		local counter       = 0;
+		timer.Create(over_time / exec_times, function()
+			if (not IsValid(self)) then return; end
 
-            counter = counter + 1;
-            current_scale = current_scale + increment;
+			counter = counter + 1;
+			current_scale = current_scale + increment;
 
-            if (counter == exec_times and current_scale ~= scale) then
-                self.m_flModelScale = scale;
-            else
-                self.m_flModelScale = current_scale;
-            end
-        end, exec_times);
-    else
-        self.m_flModelScale = scale;
-    end
+			if (counter == exec_times and current_scale ~= scale) then
+				self.m_flModelScale = scale;
+			else
+				self.m_flModelScale = current_scale;
+			end
+		end, exec_times);
+	else
+		self.m_flModelScale = scale;
+	end
 end
 
 -- Play a particle system and parent it to the entity
 CEntity.PlayParentedParticle = function(self, particle, offset, remove_after, RemoveFunction)
-    if (not IsValid(self)) then return; end
+	if (not IsValid(self)) then return; end
 
-    particle = ents.CreateWithKeys("info_particle_system", {
-        effect_name=particle, start_active=1,
-        ["$modules"]="fakeparent", ["$positiononly"]=1,
-    }, true, true)
+	particle = ents.CreateWithKeys("info_particle_system", {
+		effect_name=particle, start_active=1,
+		["$modules"]="fakeparent", ["$positiononly"]=1,
+	}, true, true)
 
-    local entity_origin = self:GetAbsOrigin();
-    if (offset) then entity_origin = entity_origin + offset; end
+	local entity_origin = self:GetAbsOrigin();
+	if (offset) then entity_origin = entity_origin + offset; end
 
-    particle.m_vecOrigin = entity_origin;
-    particle:SetFakeParent(self);
-    particle:Start();
+	particle.m_vecOrigin = entity_origin;
+	particle:SetFakeParent(self);
+	particle:Start();
 
-    timer.Create(remove_after, function()
-        pcall(particle["Remove"], particle);
-        if (RemoveFunction) then pcall(RemoveFunction); end
-    end, 1);
+	timer.Create(remove_after, function()
+		pcall(particle["Remove"], particle);
+		if (RemoveFunction) then pcall(RemoveFunction); end
+	end, 1);
 
-    return particle;
+	return particle;
 end
 
 -- Is this entity within volume?
 CEntity.IsInBox = function(self, mins, maxs)
-    if (not IsValid(self)) then return; end
+	if (not IsValid(self)) then return; end
 
-    local origin = self:GetAbsOrigin();
+	local origin = self:GetAbsOrigin();
 
-    -- Verify arguments
-    for key, val in pairs({mins.x, mins.y, mins.z}) do
-        if (mins[key] > maxs[key]) then
-            mins[key], maxs[key] = maxs[key], mins[key];
-        elseif (mins[key] == maxs[key]) then
-            return;
-        end
-    end
+	-- Verify arguments
+	for key, val in pairs({mins.x, mins.y, mins.z}) do
+		if (mins[key] > maxs[key]) then
+			mins[key], maxs[key] = maxs[key], mins[key];
+		elseif (mins[key] == maxs[key]) then
+			return;
+		end
+	end
 
-    -- Is entity within bounds?
-    for key, val in pairs({origin.x, origin.y, origin.z}) do
-        if (not (origin[key] > mins[key] and origin[key] < maxs[key])) then return false; end
-    end
+	-- Is entity within bounds?
+	for key, val in pairs({origin.x, origin.y, origin.z}) do
+		if (not (origin[key] > mins[key] and origin[key] < maxs[key])) then return false; end
+	end
 
-    return true;
+	return true;
 end
 
 -------------
@@ -195,46 +195,46 @@ end
 
 -- How many spells does this player have unlocked
 CEntity.CountUnlockedSpells = function(self)
-    if (not IsValidRealPlayer(self)) then return; end
+	if (not IsValidRealPlayer(self)) then return; end
 
-    local playerdata = player_list[self:GetUserId()].upgrades_spell_data;
+	local playerdata = player_list[self:GetUserId()].upgrades_spell_data;
 
-    local count = 0;
-    for spell, data in pairs(playerdata) do
-        if (data._id) then
-            count = count + 1;
-        end
-    end
+	local count = 0;
+	for spell, data in pairs(playerdata) do
+		if (data._id) then
+			count = count + 1;
+		end
+	end
 
-    return count;
+	return count;
 end
 
 -- Play a voiceline for Captain Kinky
 CEntity.PlayKinkyVO = function(self, sound, ext, range1, range2, duration, toself)
-    if (not IsValidRealPlayer(self)) then return; end
+	if (not IsValidRealPlayer(self)) then return; end
 
-    local userid     = self:GetUserId();
-    local playerdata = player_list[userid];
+	local userid     = self:GetUserId();
+	local playerdata = player_list[userid];
 
-    if (not playerdata.kinky_speaking_vo) then
-        if (range1 and range2) then
-            if (toself) then self:PlaySoundToSelf(sound..math.random(range1, range2)..ext);
-            else self:PlaySound(sound..math.random(range1, range2)..ext); end
-        else
-            if (toself) then self:PlaySoundToSelf(sound..".wav");
-            else self:PlaySound(sound..".wav"); end
-        end
+	if (not playerdata.kinky_speaking_vo) then
+		if (range1 and range2) then
+			if (toself) then self:PlaySoundToSelf(sound..math.random(range1, range2)..ext);
+			else self:PlaySound(sound..math.random(range1, range2)..ext); end
+		else
+			if (toself) then self:PlaySoundToSelf(sound..".wav");
+			else self:PlaySound(sound..".wav"); end
+		end
 
-        if (duration) then
-            playerdata.kinky_speaking_vo = true;
+		if (duration) then
+			playerdata.kinky_speaking_vo = true;
 
-            timer.Create(duration, function()
-                if (not IsValid(self)) then return; end
+			timer.Create(duration, function()
+				if (not IsValid(self)) then return; end
 
-                playerdata.kinky_speaking_vo = false;
-            end, 1)
-        end
-    end
+				playerdata.kinky_speaking_vo = false;
+			end, 1)
+		end
+	end
 end
 
 -- Play a sequence for this player's viewmodel
@@ -256,9 +256,9 @@ end
 
 -- Get player eye angles
 CEntity.GetEyeAngles = function(self)
-    if (IsValidPlayer(self)) then
-        return Vector(self["m_angEyeAngles[0]"], self["m_angEyeAngles[1]"], 0);
-    end
+	if (IsValidPlayer(self)) then
+		return Vector(self["m_angEyeAngles[0]"], self["m_angEyeAngles[1]"], 0);
+	end
 end
 
 -- Get player eye position
@@ -303,53 +303,53 @@ end
 
 -- Get player velocity in the X and Y axes (no Z)
 CEntity.GetXYVelocity = function(self)
-    if (IsValidAlivePlayer(self)) then
-        local vecvelocity = self.m_vecAbsVelocity;
-        local a = math.abs(vecvelocity.x);
-        local b = math.abs(vecvelocity.y);
+	if (IsValidAlivePlayer(self)) then
+		local vecvelocity = self.m_vecAbsVelocity;
+		local a = math.abs(vecvelocity.x);
+		local b = math.abs(vecvelocity.y);
 
-        return math.round(math.sqrt(a^2 + b^2), 2);
-    end
+		return math.round(math.sqrt(a^2 + b^2), 2);
+	end
 end
 
 -- Is this player walking?
 CEntity.IsWalking = function(self)
-    if (IsValidAlivePlayer(self)) then
-        if (self.movetype == MOVETYPE_WALK and (self.m_fFlags & FL_ONGROUND ~= 0)) then
-            return self:GetXYVelocity() >= 130;
-        end
-    end
+	if (IsValidAlivePlayer(self)) then
+		if (self.movetype == MOVETYPE_WALK and (self.m_fFlags & FL_ONGROUND ~= 0)) then
+			return self:GetXYVelocity() >= 130;
+		end
+	end
 end
 
 -- Is this player midair?
 CEntity.IsMidair = function(self)
-    if (IsValidAlivePlayer(self)) then
-        return not (self.movetype == MOVETYPE_WALK and (self.m_fFlags & FL_ONGROUND ~= 0));
-    end
+	if (IsValidAlivePlayer(self)) then
+		return not (self.movetype == MOVETYPE_WALK and (self.m_fFlags & FL_ONGROUND ~= 0));
+	end
 end
 
 -- Is this player Harry Potter?
 CEntity.IsWizard = function(self)
-    if (not IsValidRealPlayer(self)) then return false; end
+	if (not IsValidRealPlayer(self)) then return false; end
 
-    return (self.m_iTeamNum == TEAM_RED and
-            self.m_iClass == TF_CLASS_ENGINEER and
-            player_list[self:GetUserId()].wizard_type ~= WIZARD_NONE);
+	return (self.m_iTeamNum == TEAM_RED and
+			self.m_iClass == TF_CLASS_ENGINEER and
+			player_list[self:GetUserId()].wizard_type ~= WIZARD_NONE);
 end
 
 -- Is this player invulnerable?
 CEntity.IsInvuln = function(self)
-    if (not IsValidPlayer(self)) then return; end
+	if (not IsValidPlayer(self)) then return; end
 
-    if (self:InCond(TF_COND_INVULNERABLE) or
-        self:InCond(TF_COND_INVULNERABLE_CARD_EFFECT) or
-        self:InCond(TF_COND_INVULNERABLE_HIDE_UNLESS_DAMAGED) or
-        self:InCond(TF_COND_INVULNERABLE_USER_BUFF)) then
+	if (self:InCond(TF_COND_INVULNERABLE) or
+		self:InCond(TF_COND_INVULNERABLE_CARD_EFFECT) or
+		self:InCond(TF_COND_INVULNERABLE_HIDE_UNLESS_DAMAGED) or
+		self:InCond(TF_COND_INVULNERABLE_USER_BUFF)) then
 
 		return true;
-    end
+	end
 
-    return false;
+	return false;
 end
 
 -- Get player's wearables
@@ -503,63 +503,63 @@ end
 -- Roll a spell for this player
 table.RandomChance = false;
 CEntity.RollSpell = function(self, chancetable)
-    if (not IsValidRealPlayer(self)) then return; end
-    if (not chancetable or table.Count(chancetable) == 0) then return; end
+	if (not IsValidRealPlayer(self)) then return; end
+	if (not chancetable or table.Count(chancetable) == 0) then return; end
 
-    local spellbook = self:GetPlayerItemBySlot(LOADOUT_POSITION_ACTION);
-    if (not spellbook or spellbook.m_iClassname ~= "tf_weapon_spellbook") then return; end
+	local spellbook = self:GetPlayerItemBySlot(LOADOUT_POSITION_ACTION);
+	if (not spellbook or spellbook.m_iClassname ~= "tf_weapon_spellbook") then return; end
 
-    local tbl  = nil;
+	local tbl  = nil;
 
-    -- Not allowed to roll custom spells
-    if (not wizard_rng_rolls_custom_spells) then
-        -- Strip custom spells from the chance table
-        local sumchances = 0;
-        tbl = {};
-        for spell, chances in pairs(chancetable) do
-            if (not spell_data[spell].is_custom) then
-                tbl[spell] = chances;
-                sumchances = sumchances + chances.roll_chance;
-            end
-        end
+	-- Not allowed to roll custom spells
+	if (not wizard_rng_rolls_custom_spells) then
+		-- Strip custom spells from the chance table
+		local sumchances = 0;
+		tbl = {};
+		for spell, chances in pairs(chancetable) do
+			if (not spell_data[spell].is_custom) then
+				tbl[spell] = chances;
+				sumchances = sumchances + chances.roll_chance;
+			end
+		end
 
-        -- The chance sum isn't correct as a result of removing custom spells
-        if (sumchances ~= 1) then
-            -- How much does each entry need to change?
-            local difference = math.abs(1 - sumchances);
-            local increment  = difference / table.Count(chancetable);
+		-- The chance sum isn't correct as a result of removing custom spells
+		if (sumchances ~= 1) then
+			-- How much does each entry need to change?
+			local difference = math.abs(1 - sumchances);
+			local increment  = difference / table.Count(chancetable);
 
-            -- Increment the table chances
-            for spell, chances in pairs(tbl) do
-                if (sumchances > 1) then
-                    chances.roll_chance = chances.roll_chance - increment;
-                elseif (sumchances < 1) then
-                    chances.roll_chance = chances.roll_chance + increment;
-                end
-            end
-        end
-    -- Allowed to use custom spells
-    else
-        tbl = chancetable;
-    end
+			-- Increment the table chances
+			for spell, chances in pairs(tbl) do
+				if (sumchances > 1) then
+					chances.roll_chance = chances.roll_chance - increment;
+				elseif (sumchances < 1) then
+					chances.roll_chance = chances.roll_chance + increment;
+				end
+			end
+		end
+	-- Allowed to use custom spells
+	else
+		tbl = chancetable;
+	end
 
-    -- Choose a random spell
-    local spell   = table.RandomChance(tbl);
-    local charges = table.RandomChance(tbl[spell].charge_chances);
+	-- Choose a random spell
+	local spell   = table.RandomChance(tbl);
+	local charges = table.RandomChance(tbl[spell].charge_chances);
 
-    -- Get our the spellbook's current spell
-    local current_spell = spellbook.m_iSelectedSpellIndex;
-    if (spellbook._m_iCustomSelectedSpellIndex) then
-        current_spell = spellbook._m_iCustomSelectedSpellIndex;
-    end
+	-- Get our the spellbook's current spell
+	local current_spell = spellbook.m_iSelectedSpellIndex;
+	if (spellbook._m_iCustomSelectedSpellIndex) then
+		current_spell = spellbook._m_iCustomSelectedSpellIndex;
+	end
 
-    -- Only select a spell if no spell or common -> rare
-    if (current_spell < 0 or spellbook.m_iSpellCharges == 0 or
-        (spell_data[current_spell].spell_type == SPELL_TYPE_COMMON and
-        spell_data[spell].spell_type == SPELL_TYPE_RARE)) then
+	-- Only select a spell if no spell or common -> rare
+	if (current_spell < 0 or spellbook.m_iSpellCharges == 0 or
+		(spell_data[current_spell].spell_type == SPELL_TYPE_COMMON and
+		spell_data[spell].spell_type == SPELL_TYPE_RARE)) then
 
-        SelectSpell(spellbook, spell, charges, 2.5, false, true);
-    end
+		SelectSpell(spellbook, spell, charges, 2.5, false, true);
+	end
 end
 
 -------------
@@ -568,88 +568,88 @@ end
 
 -- Get the footstep timer delay for temp ent spawning
 function GetTimerDelay(class)
-    if     ( class == TF_CLASS_SCOUT )        then return 0.15;
-    elseif ( class == TF_CLASS_SOLDIER )      then return 0.3;
-    elseif ( class == TF_CLASS_PYRO )         then return 0.25;
-    elseif ( class == TF_CLASS_DEMOMAN )      then return 0.25;
-    elseif ( class == TF_CLASS_HEAVYWEAPONS ) then return 0.2;
-    elseif ( class == TF_CLASS_ENGINEER )     then return 0.25;
-    elseif ( class == TF_CLASS_MEDIC )        then return 0.25;
-    elseif ( class == TF_CLASS_SNIPER )       then return 0.25;
-    elseif ( class == TF_CLASS_SPY )          then return 0.25;
-    elseif ( class == TF_CLASS_CIVILIAN)      then return 0.3;
-    else return 0.25;
-    end
+	if     ( class == TF_CLASS_SCOUT )        then return 0.15;
+	elseif ( class == TF_CLASS_SOLDIER )      then return 0.3;
+	elseif ( class == TF_CLASS_PYRO )         then return 0.25;
+	elseif ( class == TF_CLASS_DEMOMAN )      then return 0.25;
+	elseif ( class == TF_CLASS_HEAVYWEAPONS ) then return 0.2;
+	elseif ( class == TF_CLASS_ENGINEER )     then return 0.25;
+	elseif ( class == TF_CLASS_MEDIC )        then return 0.25;
+	elseif ( class == TF_CLASS_SNIPER )       then return 0.25;
+	elseif ( class == TF_CLASS_SPY )          then return 0.25;
+	elseif ( class == TF_CLASS_CIVILIAN)      then return 0.3;
+	else return 0.25;
+	end
 end
 
 -- Create a temp ent footstep timer for this player
 function CreateTETimer(player, tempent, keyvalues, soundtable, soundevery)
-    if (not IsValidPlayer(player)) then return; end
-    if (soundtable and not soundevery or soundevery == 0) then soundevery = 1; end
+	if (not IsValidPlayer(player)) then return; end
+	if (soundtable and not soundevery or soundevery == 0) then soundevery = 1; end
 
-    local count  = 0
-    return timer.Create(GetTimerDelay(player.m_iClass), function()
-            if (not IsValid(player)) then return; end
+	local count  = 0
+	return timer.Create(GetTimerDelay(player.m_iClass), function()
+			if (not IsValid(player)) then return; end
 
-            count = count + 1;
+			count = count + 1;
 
-            if (soundtable and count % soundevery == 0) then
-                player:PlaySoundToSelf(table.Random(soundtable));
-            end
+			if (soundtable and count % soundevery == 0) then
+				player:PlaySoundToSelf(table.Random(soundtable));
+			end
 
-            local origin = player:GetAbsOrigin();
-            origin.z = origin.z + 8;
-            keyvalues.m_vecOrigin = origin;
+			local origin = player:GetAbsOrigin();
+			origin.z = origin.z + 8;
+			keyvalues.m_vecOrigin = origin;
 
-            tempents.Send(tempent, keyvalues, nil);
-        end, 0)
+			tempents.Send(tempent, keyvalues, nil);
+		end, 0)
 end
 
 -- Damage all players within volume
 function DamagePlayersInBox(player, mins, maxs, DamageFunction, OnDamageFunction)
 	if (not IsValidAlivePlayer(player)) then return; end
 	
-    local player_origin = player:GetAbsOrigin();
-    local entities = ents.FindInBox(player_origin+mins, player_origin+maxs);
+	local player_origin = player:GetAbsOrigin();
+	local entities = ents.FindInBox(player_origin+mins, player_origin+maxs);
 
-    local enemy_count = 0;
-    for index, ent in pairs(entities) do
-        if (IsValidAlivePlayer(ent) and ent.m_iTeamNum ~= player.m_iTeamNum) then
-            enemy_count = enemy_count + 1;
-        end
-    end
+	local enemy_count = 0;
+	for index, ent in pairs(entities) do
+		if (IsValidAlivePlayer(ent) and ent.m_iTeamNum ~= player.m_iTeamNum) then
+			enemy_count = enemy_count + 1;
+		end
+	end
 
-    local damage = 0;
-    if (DamageFunction) then
-        damage = DamageFunction(enemy_count);
-    end
+	local damage = 0;
+	if (DamageFunction) then
+		damage = DamageFunction(enemy_count);
+	end
 
-    for index, ent in pairs(entities) do
-        if (IsValidAlivePlayer(ent) and ent.m_iTeamNum ~= player.m_iTeamNum) then
-            ent:TakeDamage({
-                Attacker = player,
-                Inflictor = nil,
-                Weapon = nil,
-                Damage = damage,
-                DamageType = DMG_BURN | DMG_PREVENT_PHYSICS_FORCE,
-                DamageCustom = TF_DMG_CUSTOM_BURNING,
-                DamagePosition = player_origin,
-                DamageForce = Vector(0,0,0),
-                ReportedPosition = player_origin,
-            });
-            if (OnDamageFunction) then OnDamageFunction(ent); end
-        end
-    end
+	for index, ent in pairs(entities) do
+		if (IsValidAlivePlayer(ent) and ent.m_iTeamNum ~= player.m_iTeamNum) then
+			ent:TakeDamage({
+				Attacker = player,
+				Inflictor = nil,
+				Weapon = nil,
+				Damage = damage,
+				DamageType = DMG_BURN | DMG_PREVENT_PHYSICS_FORCE,
+				DamageCustom = TF_DMG_CUSTOM_BURNING,
+				DamagePosition = player_origin,
+				DamageForce = Vector(0,0,0),
+				ReportedPosition = player_origin,
+			});
+			if (OnDamageFunction) then OnDamageFunction(ent); end
+		end
+	end
 
-    return enemy_count;
+	return enemy_count;
 end
 
 -- Cleanup heavy resources
 function CleanupHeavyResources(player)
 	if (not IsValidRealPlayer(player)) then return; end
 	
-    local userid = player:GetUserId();
-    local playerdata = player_list[userid];
+	local userid = player:GetUserId();
+	local playerdata = player_list[userid];
 	
 	player:SetForcedTauntCam(0);
 	
@@ -661,8 +661,8 @@ end
 function CleanupDemoResources(player)
 	if (not IsValidRealPlayer(player)) then return; end
 	
-    local userid = player:GetUserId();
-    local playerdata = player_list[userid];
+	local userid = player:GetUserId();
+	local playerdata = player_list[userid];
 	
 	-- Reset view
 	local ang = player:GetEyeAngles();
@@ -675,175 +675,175 @@ end
 
 -- Cleanup pyro resources
 function CleanupPyroResources(player)
-    if (not IsValidRealPlayer(player)) then return; end
+	if (not IsValidRealPlayer(player)) then return; end
 
-    local userid = player:GetUserId();
-    local playerdata = player_list[userid];
+	local userid = player:GetUserId();
+	local playerdata = player_list[userid];
 
-    local pyro_embers = playerdata.pyro_ember_particle;
-    local pyro_timer  = playerdata.pyro_aoeblast_timer;
+	local pyro_embers = playerdata.pyro_ember_particle;
+	local pyro_timer  = playerdata.pyro_aoeblast_timer;
 
-    if (pyro_embers) then
-        pcall(pyro_embers["Remove"], pyro_embers);
-        playerdata.pyro_ember_particle = nil;
-    end
+	if (pyro_embers) then
+		pcall(pyro_embers["Remove"], pyro_embers);
+		playerdata.pyro_ember_particle = nil;
+	end
 
-    if (pyro_timer) then
-        pcall(timer.Stop, playerdata.pyro_aoeblast_timer);
-        playerdata.pyro_aoeblast_timer = nil;
-    end
+	if (pyro_timer) then
+		pcall(timer.Stop, playerdata.pyro_aoeblast_timer);
+		playerdata.pyro_aoeblast_timer = nil;
+	end
 end
 
 -- Cleanup scout resources
 function CleanupScoutResources(player)
-    if (not IsValidRealPlayer(player)) then return; end
+	if (not IsValidRealPlayer(player)) then return; end
 
-    local userid     = player:GetUserId();
-    local playerdata = player_list[userid];
+	local userid     = player:GetUserId();
+	local playerdata = player_list[userid];
 
-    -- Handle scout tempents
-    if (playerdata.scout_tempent_timer or playerdata.scout_should_spawn_tempent) then
-        playerdata.scout_should_spawn_tempent = false;
-        pcall(timer.Stop, playerdata.scout_tempent_timer);
-        playerdata.scout_tempent_timer = nil;
-    end
+	-- Handle scout tempents
+	if (playerdata.scout_tempent_timer or playerdata.scout_should_spawn_tempent) then
+		playerdata.scout_should_spawn_tempent = false;
+		pcall(timer.Stop, playerdata.scout_tempent_timer);
+		playerdata.scout_tempent_timer = nil;
+	end
 
-    playerdata.scout_drinking_soda = false;
+	playerdata.scout_drinking_soda = false;
 end
 
 -- Stop Kinky's charge
 function KinkyStopCharging(player)
-    if (not IsValidRealPlayer(player)) then return; end
+	if (not IsValidRealPlayer(player)) then return; end
 
-    local userid = player:GetUserId();
-    local playerdata = player_list[userid];
+	local userid = player:GetUserId();
+	local playerdata = player_list[userid];
 
-    if (playerdata.kinky_charging) then
-        if (playerdata.kinky_charge_timer) then
-            pcall(timer.Stop, playerdata.kinky_charge_timer);
-            playerdata.kinky_charge_timer = nil;
-        end
-        playerdata.kinky_charging     = false;
-        playerdata.kinky_charge_time  = 0;
+	if (playerdata.kinky_charging) then
+		if (playerdata.kinky_charge_timer) then
+			pcall(timer.Stop, playerdata.kinky_charge_timer);
+			playerdata.kinky_charge_timer = nil;
+		end
+		playerdata.kinky_charging     = false;
+		playerdata.kinky_charge_time  = 0;
 
-        player:SetAttributeValue("no_jump", 0);
-        player:SetAttributeValue("no_duck", 0);
-        timer.Create(0.5, function()
-            if (not IsValid(player)) then return; end
-            player:RemoveCond(TF_COND_CRITBOOSTED);
-        end, 1);
-    end
+		player:SetAttributeValue("no_jump", 0);
+		player:SetAttributeValue("no_duck", 0);
+		timer.Create(0.5, function()
+			if (not IsValid(player)) then return; end
+			player:RemoveCond(TF_COND_CRITBOOSTED);
+		end, 1);
+	end
 end
 
 -- Ich trinke Cola und spiele Fortnite! Yipeeeeeeeee!
 function PlayerDrinkSoda(player, defindex)
 	if (not IsValidAliveRealPlayer(player)) then return; end
 	
-    local userid = player:GetUserId();
-    local playerdata = player_list[userid];
+	local userid = player:GetUserId();
+	local playerdata = player_list[userid];
 
 	-- Bonk! Atomic Punch
-    if ((defindex == 46 or defindex == 1145) and not player:IsMidair() and not
-        playerdata.scout_drinking_soda) then
+	if ((defindex == 46 or defindex == 1145) and not player:IsMidair() and not
+		playerdata.scout_drinking_soda) then
 
-        playerdata.scout_drinking_soda = true;
-        local move_speed_bonus = player:GetAttributeValue("move speed bonus") or 1;
-        local health_regen     = player:GetAttributeValue("health regen") or 0;
+		playerdata.scout_drinking_soda = true;
+		local move_speed_bonus = player:GetAttributeValue("move speed bonus") or 1;
+		local health_regen     = player:GetAttributeValue("health regen") or 0;
 
-        player:SetForcedTauntCam(1);
+		player:SetForcedTauntCam(1);
 
-        timer.Create(0.5, function()
-            if (not IsValid(player)) then return; end
+		timer.Create(0.5, function()
+			if (not IsValid(player)) then return; end
 
-            local player_pos = player:GetAbsOrigin();
-            player_pos.z = player_pos.z + 70;
-            util.ParticleEffect("utaunt_lightning_bolt", player_pos,
-                                Vector(0, player["m_angEyeAngles[1]"] + 180, 0));
-            player:PlaySound("ambient/energy/zap1.wav");
+			local player_pos = player:GetAbsOrigin();
+			player_pos.z = player_pos.z + 70;
+			util.ParticleEffect("utaunt_lightning_bolt", player_pos,
+								Vector(0, player["m_angEyeAngles[1]"] + 180, 0));
+			player:PlaySound("ambient/energy/zap1.wav");
 
-            player.m_clrRender = math.rgbtoint(52, 116, 78);
-            player:SetAttributeValues({
-                ["voice pitch scale"]=0.75, ["no double jump"]=1, ["health regen"]=20,
-                ["max health additive bonus"]=125, ["move speed penalty"]=0.875,
-                ["damage force reduction"]=0.5, ["damage bonus"]=1.25, ["fire rate penalty"]=1.15,
-                ["move speed bonus"]=1, ["hand scale"]=1.75,
-            });
+			player.m_clrRender = math.rgbtoint(52, 116, 78);
+			player:SetAttributeValues({
+				["voice pitch scale"]=0.75, ["no double jump"]=1, ["health regen"]=20,
+				["max health additive bonus"]=125, ["move speed penalty"]=0.875,
+				["damage force reduction"]=0.5, ["damage bonus"]=1.25, ["fire rate penalty"]=1.15,
+				["move speed bonus"]=1, ["hand scale"]=1.75,
+			});
 
-            timer.Create(8, function()
-                if (not IsValid(player)) then return; end
+			timer.Create(8, function()
+				if (not IsValid(player)) then return; end
 
-                playerdata.scout_drinking_soda = false;
-                player:SetForcedTauntCam(0);
-                player.m_clrRender = math.rgbtoint(255, 255, 255);
+				playerdata.scout_drinking_soda = false;
+				player:SetForcedTauntCam(0);
+				player.m_clrRender = math.rgbtoint(255, 255, 255);
 
-                if (player.m_iClass == TF_CLASS_SCOUT) then
-                    player:SetAttributeValues({
-                        ["voice pitch scale"]=1, ["no double jump"]=0, ["health regen"]=health_regen,
-                        ["max health additive bonus"]=0, ["move speed penalty"]=1,
-                        ["damage force reduction"]=1, ["damage bonus"]=1, ["fire rate penalty"]=1,
-                        ["move speed bonus"]=move_speed_bonus, ["hand scale"]=1,
-                    });
-                end
-            end, 1);
-        end, 1);
+				if (player.m_iClass == TF_CLASS_SCOUT) then
+					player:SetAttributeValues({
+						["voice pitch scale"]=1, ["no double jump"]=0, ["health regen"]=health_regen,
+						["max health additive bonus"]=0, ["move speed penalty"]=1,
+						["damage force reduction"]=1, ["damage bonus"]=1, ["fire rate penalty"]=1,
+						["move speed bonus"]=move_speed_bonus, ["hand scale"]=1,
+					});
+				end
+			end, 1);
+		end, 1);
 
-        timer.Create(1.2, function()
-            if (not IsValid(player)) then return; end
-            player:RemoveCond(TF_COND_PHASE);
-        end, 1);
+		timer.Create(1.2, function()
+			if (not IsValid(player)) then return; end
+			player:RemoveCond(TF_COND_PHASE);
+		end, 1);
 
 	-- Crit-a-Cola
-    elseif (defindex == 163 and not player:IsMidair() and not
-            playerdata.scout_drinking_soda) then
+	elseif (defindex == 163 and not player:IsMidair() and not
+			playerdata.scout_drinking_soda) then
 
-        playerdata.scout_drinking_soda = true;
-        local move_speed = player:GetAttributeValue("move speed bonus") or 1;
-        local jump_height = player:GetAttributeValue("increased jump height") or 1;
-        local dmgfromcrits = player:GetAttributeValue("dmg taken from crit reduced") or 1;
+		playerdata.scout_drinking_soda = true;
+		local move_speed = player:GetAttributeValue("move speed bonus") or 1;
+		local jump_height = player:GetAttributeValue("increased jump height") or 1;
+		local dmgfromcrits = player:GetAttributeValue("dmg taken from crit reduced") or 1;
 
-        player:SetForcedTauntCam(1);
+		player:SetForcedTauntCam(1);
 
-        timer.Create(0.5, function()
-            if (not IsValid(player)) then return; end
+		timer.Create(0.5, function()
+			if (not IsValid(player)) then return; end
 
-            local player_pos = player:GetAbsOrigin();
-            player_pos.z = player_pos.z + 70;
-            util.ParticleEffect("utaunt_lightning_bolt", player_pos,
-                                Vector(0, player["m_angEyeAngles[1]"] + 180, 0));
-            player:PlaySound("ambient/energy/zap1.wav");
+			local player_pos = player:GetAbsOrigin();
+			player_pos.z = player_pos.z + 70;
+			util.ParticleEffect("utaunt_lightning_bolt", player_pos,
+								Vector(0, player["m_angEyeAngles[1]"] + 180, 0));
+			player:PlaySound("ambient/energy/zap1.wav");
 
-            player:SetAttributeValues({
-                ["voice pitch scale"]=1.25, ["move speed bonus"]=1.5, ["fire rate bonus"]=0.8,
-                ["mult dmgtaken from melee"]=0.7, ["air dash count"]=8, ["increased jump height"]=1.8,
-                ["cancel falling damage"]=1, ["dmg taken from crit reduced"]=0.001,
-            });
+			player:SetAttributeValues({
+				["voice pitch scale"]=1.25, ["move speed bonus"]=1.5, ["fire rate bonus"]=0.8,
+				["mult dmgtaken from melee"]=0.7, ["air dash count"]=8, ["increased jump height"]=1.8,
+				["cancel falling damage"]=1, ["dmg taken from crit reduced"]=0.001,
+			});
 
-            timer.Create(8, function()
-                if (not IsValid(player)) then return; end
+			timer.Create(8, function()
+				if (not IsValid(player)) then return; end
 
-                playerdata.scout_drinking_soda = false;
+				playerdata.scout_drinking_soda = false;
 
-                player:SetForcedTauntCam(0);
-                playerdata.scout_should_spawn_tempent = false;
-                pcall(timer.Stop, playerdata.scout_tempent_timer);
-                playerdata.scout_tempent_timer = nil;
+				player:SetForcedTauntCam(0);
+				playerdata.scout_should_spawn_tempent = false;
+				pcall(timer.Stop, playerdata.scout_tempent_timer);
+				playerdata.scout_tempent_timer = nil;
 
-                if (player.m_iClass == TF_CLASS_SCOUT) then
-                    player:SetAttributeValues({
-                        ["voice pitch scale"]=1, ["move speed bonus"]=move_speed, ["fire rate bonus"]=1,
-                        ["mult dmgtaken from melee"]=1, ["air dash count"]=0, ["increased jump height"]=jump_height,
-                        ["cancel falling damage"]=0, ["dmg taken from crit reduced"]=dmgfromcrits,
-                    });
-                end
-            end, 1);
-        end, 1);
+				if (player.m_iClass == TF_CLASS_SCOUT) then
+					player:SetAttributeValues({
+						["voice pitch scale"]=1, ["move speed bonus"]=move_speed, ["fire rate bonus"]=1,
+						["mult dmgtaken from melee"]=1, ["air dash count"]=0, ["increased jump height"]=jump_height,
+						["cancel falling damage"]=0, ["dmg taken from crit reduced"]=dmgfromcrits,
+					});
+				end
+			end, 1);
+		end, 1);
 
-        timer.Create(1.2, function()
-            if (not IsValid(player)) then return; end
+		timer.Create(1.2, function()
+			if (not IsValid(player)) then return; end
 
-            playerdata.scout_should_spawn_tempent = true;
-        end, 1);
-    end
+			playerdata.scout_should_spawn_tempent = true;
+		end, 1);
+	end
 end
 
 -- Parry those filthy peasants!
@@ -888,11 +888,11 @@ end
 
 -- Play a sound at a generic position
 function PlaySound(sound, position)
-    local ent = ents.CreateWithKeys("info_target", {}, true, true);
+	local ent = ents.CreateWithKeys("info_target", {}, true, true);
 
-    ent:SetAbsOrigin(position);
-    ent:PlaySound(sound);
-    ent:Remove();
+	ent:SetAbsOrigin(position);
+	ent:PlaySound(sound);
+	ent:Remove();
 end
 
 -- Get key with random chance from table of format:
@@ -901,20 +901,20 @@ end
 -- key : {roll_chance=probability, charge_chances={[1]=probability}}
 -- see: spell_rng_*_chances for example
 table.RandomChance = function(t)
-    local rand = math.random()
-    local cumulativeProbability = 0
+	local rand = math.random()
+	local cumulativeProbability = 0
 
-    for key, item in pairs(t) do
-        if (type(item) == "table") then
-            cumulativeProbability = cumulativeProbability + item.roll_chance;
-        else
-            cumulativeProbability = cumulativeProbability + item;
-        end
+	for key, item in pairs(t) do
+		if (type(item) == "table") then
+			cumulativeProbability = cumulativeProbability + item.roll_chance;
+		else
+			cumulativeProbability = cumulativeProbability + item;
+		end
 
-        if (rand <= cumulativeProbability) then
-            return key;
-        end
-    end
+		if (rand <= cumulativeProbability) then
+			return key;
+		end
+	end
 end
 
 timer.CreateThink = function(interval, func, repeats, testfunc, ...)

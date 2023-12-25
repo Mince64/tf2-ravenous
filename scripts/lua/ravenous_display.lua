@@ -1,19 +1,19 @@
 function OnMenuCancel(player, reason)
-    player_list[player:GetUserId()].displaying_menu = nil;
+	player_list[player:GetUserId()].displaying_menu = nil;
 end
 
 function OnSpellMenuSelect(player, selectedIndex, value)
-    local userid = player:GetUserId()
-    value = tonumber(value);
+	local userid = player:GetUserId()
+	value = tonumber(value);
 
-    if (not player:IsWizard()) then return; end
+	if (not player:IsWizard()) then return; end
 
-    player_list[userid].displaying_menu = nil;
+	player_list[userid].displaying_menu = nil;
 
-    if (not debug and not midwave) then
-        player:Print(PRINT_TARGET_CENTER, "You can only select spells once the wave starts!");
-        return;
-    end
+	if (not debug and not midwave) then
+		player:Print(PRINT_TARGET_CENTER, "You can only select spells once the wave starts!");
+		return;
+	end
 
 	local spellbook = player:GetPlayerItemBySlot(LOADOUT_POSITION_ACTION);
 	if (not spellbook or spellbook.m_iClassname ~= "tf_weapon_spellbook") then return; end
@@ -27,7 +27,7 @@ function OnSpellMenuSelect(player, selectedIndex, value)
 end
 
 function OnFlaskMenuSelect(player, selectedIndex, value)
-    local userid = player:GetUserId()
+	local userid = player:GetUserId()
 	value = tonumber(value);
 	
 	local playerdata = player_list[userid];
@@ -49,70 +49,70 @@ function OnFlaskMenuSelect(player, selectedIndex, value)
 end
 
 base_spell_menu = {
-    timeout      = 0,
-    title        = "Choose a Spell!",
-    itemsPerPage = nil,
-    flags        = MENUFLAG_BUTTON_EXIT,
-    onSelect     = OnSpellMenuSelect,
-    onCancel     = OnMenuCancel,
+	timeout      = 0,
+	title        = "Choose a Spell!",
+	itemsPerPage = nil,
+	flags        = MENUFLAG_BUTTON_EXIT,
+	onSelect     = OnSpellMenuSelect,
+	onCancel     = OnMenuCancel,
 };
 
 debug_spell_menu = {
-    timeout      = 0,
-    title        = "[DEBUG] Choose a Spell",
-    itemsPerPage = nil,
-    flags        = MENUFLAG_BUTTON_EXIT,
-    onSelect     = OnSpellMenuSelect,
-    onCancel     = OnMenuCancel,
+	timeout      = 0,
+	title        = "[DEBUG] Choose a Spell",
+	itemsPerPage = nil,
+	flags        = MENUFLAG_BUTTON_EXIT,
+	onSelect     = OnSpellMenuSelect,
+	onCancel     = OnMenuCancel,
 };
 -- Populate debug menu with all spells
 for spell, data in pairs(spell_data) do
-    debug_spell_menu[spell+1] = {text=data.name, value=spell, disabled=false};
+	debug_spell_menu[spell+1] = {text=data.name, value=spell, disabled=false};
 end
 
 base_flask_menu = {
-    timeout      = 0,
-    title        = "Choose a Flask!",
-    itemsPerPage = nil,
-    flags        = MENUFLAG_BUTTON_EXIT,
-    onSelect     = OnFlaskMenuSelect,
-    onCancel     = OnMenuCancel,
+	timeout      = 0,
+	title        = "Choose a Flask!",
+	itemsPerPage = nil,
+	flags        = MENUFLAG_BUTTON_EXIT,
+	onSelect     = OnFlaskMenuSelect,
+	onCancel     = OnMenuCancel,
 };
 
 -- Create a menu for a player based on their spell upgrade unlocks
 function CreateSpellMenuForPlayer(player)
-    if (not IsValidRealPlayer(player)) then return; end
+	if (not IsValidRealPlayer(player)) then return; end
 
-    local userid   = player:GetUserId();
-    local new_menu = {};
+	local userid   = player:GetUserId();
+	local new_menu = {};
 
-    -- Inherit from base spell menu
-    for key, val in pairs(base_spell_menu) do
-        new_menu[key] = val;
-    end
+	-- Inherit from base spell menu
+	for key, val in pairs(base_spell_menu) do
+		new_menu[key] = val;
+	end
 
-    -- Populate with player's unlocked spells
-    for spell, playerspelldata in pairs(player_list[userid].upgrades_spell_data) do
-        if (playerspelldata._id and playerspelldata.name) then
-            new_menu[playerspelldata._id] = {text=playerspelldata.name, value=spell, disabled=false};
-        elseif (playerspelldata._id) then
-            new_menu[playerspelldata._id] = {text=spell_data[spell].name, value=spell, disabled=false};
-        end
-    end
+	-- Populate with player's unlocked spells
+	for spell, playerspelldata in pairs(player_list[userid].upgrades_spell_data) do
+		if (playerspelldata._id and playerspelldata.name) then
+			new_menu[playerspelldata._id] = {text=playerspelldata.name, value=spell, disabled=false};
+		elseif (playerspelldata._id) then
+			new_menu[playerspelldata._id] = {text=spell_data[spell].name, value=spell, disabled=false};
+		end
+	end
 
-    return new_menu;
+	return new_menu;
 end
 
 function CreateFlaskMenuForPlayer(player)
 	if (not IsValidRealPlayer(player)) then return; end
 	
-    local userid   = player:GetUserId();
-    local new_menu = {};
+	local userid   = player:GetUserId();
+	local new_menu = {};
 	
-    -- Inherit from base spell menu
-    for key, val in pairs(base_flask_menu) do
-        new_menu[key] = val;
-    end
+	-- Inherit from base spell menu
+	for key, val in pairs(base_flask_menu) do
+		new_menu[key] = val;
+	end
 	
 	local playerdata = player_list[userid];
 	for index, flasktype in pairs(playerdata.medic_flask_data) do
@@ -124,37 +124,37 @@ end
 
 -- Clear the player's screen of hud text
 function DisplayClearHud(player)
-    for i=2,5 do
+	for i=2,5 do
 		player:ShowHudTextSimple("", i, 0, 0, CLR_WHITE, 0, 0, 0.015);
-    end
+	end
 end
 
 function DisplayManaWizardHud(player, spellbook, playerdata, current_mana_cost)
-    -- Get our the spellbook's current spell
-    local current_spell = spell_data[spellbook.m_iSelectedSpellIndex].name;
-    if (spellbook._m_iCustomSelectedSpellIndex) then
-        current_spell = spell_data[spellbook._m_iCustomSelectedSpellIndex].name;
-    end
+	-- Get our the spellbook's current spell
+	local current_spell = spell_data[spellbook.m_iSelectedSpellIndex].name;
+	if (spellbook._m_iCustomSelectedSpellIndex) then
+		current_spell = spell_data[spellbook._m_iCustomSelectedSpellIndex].name;
+	end
 
-    if (playerdata.current_mana - current_mana_cost >= 0) then
+	if (playerdata.current_mana - current_mana_cost >= 0) then
 		player:ShowHudTextSimple("Mana: "..playerdata.current_mana.." [+"..playerdata.mana_regen_rate.."/s]", 3, .78, .75, CLR_BLUE);
-    else
+	else
 		player:ShowHudTextSimple("Mana: "..playerdata.current_mana.." [+"..playerdata.mana_regen_rate.."/s]", 3, .78, .75, CLR_RED);
-    end
+	end
 
 	player:ShowHudTextSimple("Cost:  "..current_mana_cost, 4, .78, .8, CLR_RED);
 	player:ShowHudTextSimple("Press 'Reload' to select a spell!", 5, .8, .85, CLR_LIMEGREEN);
 end
 
 function DisplayRollsWizardHud(player, spellbook)
-    -- Get our the spellbook's current spell name
-    local current_spell = spell_data[spellbook.m_iSelectedSpellIndex].name;
-    if (spellbook._m_iCustomSelectedSpellIndex) then
-        current_spell = spell_data[spellbook._m_iCustomSelectedSpellIndex].name;
-    end
-    if (spellbook.m_iSpellCharges == 0 and current_spell ~= spell_data[SPELL_CHOOSING].name) then
-        current_spell = "None";
-    end
+	-- Get our the spellbook's current spell name
+	local current_spell = spell_data[spellbook.m_iSelectedSpellIndex].name;
+	if (spellbook._m_iCustomSelectedSpellIndex) then
+		current_spell = spell_data[spellbook._m_iCustomSelectedSpellIndex].name;
+	end
+	if (spellbook.m_iSpellCharges == 0 and current_spell ~= spell_data[SPELL_CHOOSING].name) then
+		current_spell = "None";
+	end
 
 	player:ShowHudTextSimple("Spell:  "..current_spell, 3, .78, .7, CLR_WHITE);
 	player:ShowHudTextSimple("Next Common: "..common_timer_value, 4, .78, .75, CLR_PURPLE);
