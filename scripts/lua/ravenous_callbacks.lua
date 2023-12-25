@@ -6,6 +6,8 @@
 -- add some more flasks? need to see how people like medic flasks to begin with, havent tested
 -- make cage model for kinky to respawn in for other maps lol
 -- fix civilian regen and crit damage before testing if raf doesnt fix
+-- find out how to play player sequences for battle hatchet and other things that mess with viewmodel sequences
+
 
 
 -- Called when a spell projectile spawns
@@ -17,59 +19,58 @@ function OnSpellProjectileSpawned(entity)
     if (entity.m_hLauncher == entity.m_hOwnerEntity and
         entity.m_iClassname == "tf_projectile_spellfireball") then return; end
 
-    local userid     = player:GetUserId();
-    local playerdata = player_list[userid];
+    local userid      = player:GetUserId();
+    local playerdata  = player_list[userid];
 
-    local spellbook = player:GetPlayerItemBySlot(LOADOUT_POSITION_ACTION);
+    local spellbook   = player:GetPlayerItemBySlot(LOADOUT_POSITION_ACTION);
     if (not spellbook or spellbook.m_iClassname ~= "tf_weapon_spellbook") then return; end
 
     local spell       = spellbook.m_iSelectedSpellIndex;
     local customspell = spellbook._m_iCustomSelectedSpellIndex;
-
-    if (playerdata.wizard_type == WIZARD_USE_MANA) then
-        -- Get the mana cost of this spell
-        local current_mana_cost = 0;
-        if (spell >= 0 or (customspell and customspell >= 0)) then
-            local cost = GetSpellData(player, spell, customspell, "mana_cost", true);
-            if (cost) then current_mana_cost = cost; end
-        end
-
-        -- Not enough mana for this spell
-        if (playerdata.current_mana - current_mana_cost < 0) then
-            local player_origin = player:GetAbsOrigin();
-
-            player:TakeDamage({
-                Attacker         = player,
-                Inflictor        = entity,
-                Weapon           = player.m_hActiveWeapon,
-                Damage           = 25,
-                DamageType       = DMG_SHOCK,
-                DamageCustom     = TF_DMG_CUSTOM_NONE,
-                DamagePosition   = player_origin,
-                DamageForce      = Vector(0,0,0),
-                ReportedPosition = player_origin,
-            });
-			
-            entity:Remove();
-            player:PlaySoundToSelf("Halloween.spell_lightning_cast");
-			player:Print(PRINT_TARGET_CENTER, "Not enough mana!");
-			
-            return;
-        end
-
-        -- Valid spell cast
-        playerdata.current_mana = playerdata.current_mana - current_mana_cost;
-    end
-
+	
     -- Call customspell spawn callback if available
     if (spellbook and customspell) then
         entity:Remove();
 
         local spawnfunc = spell_data[customspell].SpawnFunction;
-        if (spawnfunc) then
-            spawnfunc(player, spellbook)
-        end
+        if (not spawnfunc) then return; end
+            
+		spawnfunc(player, spellbook)
     end
+	
+	-- Non mana wizards don't need to worry about mana logic
+	if (playerdata.wizard_type ~= WIZARD_USE_MANA) then return; end
+
+	-- Get the mana cost of this spell
+	local current_mana_cost = 0;
+	if (spell >= 0 or (customspell and customspell >= 0)) then
+		current_mana_cost = GetSpellData(player, spell, customspell, "mana_cost", true) or 0;
+	end
+
+	-- Not enough mana for this spell
+	if (playerdata.current_mana - current_mana_cost < 0) then
+		local player_origin = player:GetAbsOrigin();
+
+		player:TakeDamage({
+			Attacker         = player,
+			Inflictor        = entity,
+			Weapon           = player.m_hActiveWeapon,
+			Damage           = 25,
+			DamageType       = DMG_SHOCK,
+			DamageCustom     = TF_DMG_CUSTOM_NONE,
+			DamagePosition   = player_origin,
+			ReportedPosition = player_origin,
+		});
+		
+		entity:Remove();
+		player:PlaySoundToSelf("Halloween.spell_lightning_cast");
+		player:Print(PRINT_TARGET_CENTER, "Not enough mana!");
+		
+		return;
+	end
+
+	-- Valid spell cast
+	playerdata.current_mana = playerdata.current_mana - current_mana_cost;
 end
 
 -- Called when a tf_projectile_cleaver entity spawns
@@ -99,33 +100,30 @@ function OnCleaverProjectileSpawned(entity)
 	local think_timer = nil;
 	think_timer = timer.Create(0.015, function()
 		-- Do we still exist?
-		if (IsValid(entity)) then
-			-- We bounced off the world, the cleaver can handle physics now
-			if (entity.m_bTouched == 1) then
-				entity:SetModelOverride("models/workshop/weapons/c_models/c_celtic_cleaver/c_demo_sultan_sword.mdl");
-				goto cleanup;
-				
-			-- Update prop position and rotation
-			-- SetParent doesn't work and SetFakeParent is laggy so doing this manually is best
-			else
-				prop:SetAbsOrigin(entity:GetAbsOrigin());
-				prop:SetAbsAngles(ang);
-				ang.z = ang.z + 7.5; -- Speeeeeeeen
-				
-				return;
-			end
+		if (not IsValid(entity)) then goto cleanup; end
+		-- We bounced off the world, the cleaver can handle physics now
+		if (entity.m_bTouched == 1) then
+			entity:SetModelOverride("models/workshop/weapons/c_models/c_celtic_cleaver/c_demo_sultan_sword.mdl");
+			goto cleanup;
 		end
+				
+		-- Update prop position and rotation
+		-- SetParent doesn't work and SetFakeParent is laggy so doing this manually is best
+		prop:SetAbsOrigin(entity:GetAbsOrigin());
+		prop:SetAbsAngles(ang);
+		ang.z = ang.z + 7.5; -- Speeeeeeeen
 		
-		-- If not, cleanup timer and prop
+		do return; end
+
 		::cleanup::
 			
 		pcall(timer.Stop, think_timer);
 		think_timer = nil;
-		prop:Remove();
+		pcall(CEntity.Remove, prop);
 	end, 0);
 end
 
--- Called when a player plays a vcd file
+-- Called when a player plays a vcd file (their model does some facial flexes)
 function OnScriptedSceneSpawned(entity)
 	local owner = entity.m_hOwner;
 	if (not IsValidRealPlayer(owner)) then return; end
@@ -197,15 +195,16 @@ function OnScriptedSceneSpawned(entity)
 				else
 					if (math.random(0, 1) == 1) then red = red + step;
 					else red = red - step; end
+					
 					if (math.random(0, 1) == 1) then green = green + step;
 					else green = green - step; end
+					
 					if (math.random(0, 1) == 1) then blue = blue + step;
 					else blue = blue - step; end
 					
 					alpha = 50;
 				end
 				
-				-- Block statement here to allow return; to be skipped by goto
 				do
 					local fade = math.randomfloat(0.5, 1);
 					owner:RunScriptCode(string.format("ScreenFade(self, %d, %d, %d, %d, %f, %f, 1)", red, green, blue, alpha, fade, fade));
@@ -372,47 +371,51 @@ function OnJarateProjectileRemoved(entity)
 	
 	local entities = ents.FindInSphere(entity:GetAbsOrigin(), 200);
 	for index, ent in pairs(entities) do
-		if (IsValidAlivePlayer(ent)) then
-			local flasktype = entity._m_nFlaskType;
-			
-			if (ent.m_iTeamNum ~= owner.m_iTeamNum) then
-				if (flasktype == FLASK_NONE or flasktype == FLASK_BLEED) then
-					ent:TakeDamageSimple(60, owner);
+		if (not IsValidAlivePlayer(ent)) then goto continue; end
+		
+		local flasktype = entity._m_nFlaskType;
+		
+		-- For enemies
+		if (ent.m_iTeamNum ~= owner.m_iTeamNum) then
+			-- Bleed
+			if (flasktype == FLASK_NONE or flasktype == FLASK_BLEED) then
+				ent:TakeDamageSimple(60, owner);
+				
+				timer.CreateThink(0.5, function()
+					ent:TakeDamageSimple(5, owner, TF_DMG_CUSTOM_BLEEDING);
+				end, 8, IsValidAlivePlayer, ent);
+				
+			-- Heal debuff
+			elseif (flasktype == FLASK_HEAL_DEBUFF) then
+				local attr = ent:GetAttributeValue("healing received penalty") or 1;
+				ent:SetAttributeValue("healing received penalty", 0.001);
+				
+				timer.Create(8, function()
+					if (not IsValidPlayer(ent) or ent.m_iTeamNum == TEAM_SPECTATOR) then return; end
 					
-					timer.CreateThink(0.5, function()
-						ent:TakeDamageSimple(5, owner, TF_DMG_CUSTOM_BLEEDING);
-					end, 8, IsValidAlivePlayer, ent);
-					
-				elseif (flasktype == FLASK_HEAL_DEBUFF) then
-					local attr = ent:GetAttributeValue("healing received penalty") or 1;
-					ent:SetAttributeValue("healing received penalty", 0.001);
-					
-					timer.Create(8, function()
-						if (not IsValidPlayer(ent)) then return; end
-						ent:SetAttributeValue("healing received penalty", attr);
-					end, 1);
-				end
+					ent:SetAttributeValue("healing received penalty", attr);
+				end, 1);
+			end
 
-			else
-				if (flasktype == FLASK_LONGHEAL) then
-					ent:PlaySoundToSelf("weapons/medigun_heal.wav");
-					timer.CreateThink(0.5, function()
-						ent:AddHealth(15, false);
-					end, 40, IsValidAlivePlayer, ent);
-					
-				elseif (flasktype == FLASK_QUICKHEAL) then
-					ent:AddCond(TF_COND_HALLOWEEN_QUICK_HEAL, 4);
-					ent:PlaySoundToSelf("Halloween.spell_overheal");
-					
-				elseif (flasktype == FLASK_UBER) then
-					ent:AddCond(TF_COND_INVULNERABLE_USER_BUFF, 2);
-					ent:PlaySoundToSelf("player/invulnerable_on.wav");
-				end
+		-- For friends
+		else	
+			-- Quick heal
+			if (flasktype == FLASK_QUICKHEAL) then
+				ent:PlaySoundToSelf("Halloween.spell_overheal");
+				ent:AddCond(TF_COND_HALLOWEEN_QUICK_HEAL, 2);
+				
+			-- Ubercharge
+			elseif (flasktype == FLASK_UBER) then
+				ent:PlaySoundToSelf("player/invulnerable_on.wav");
+				ent:AddCond(TF_COND_INVULNERABLE_USER_BUFF, 2);
 			end
 		end
+		
+		::continue::
 	end
 end
 
+-- Called on item pickup start touch
 function OnPickupStartTouch(entity, other, hitPos, hitNormal)
 	if (IsValidAliveRealPlayer(other)) then
 		if (entity._ignoreclass or entity._class == other.m_iClass) then
@@ -422,6 +425,7 @@ function OnPickupStartTouch(entity, other, hitPos, hitNormal)
 	end
 end
 
+-- Called on item pickup end touch
 function OnPickupEndTouch(entity, other, hitPos, hitNormal)
 	if (IsValidAliveRealPlayer(other)) then
 		if (entity._ignoreclass or entity._class == other.m_iClass) then
@@ -465,7 +469,7 @@ function OnRagdollCreated(entity, classname)
 
         local player = entity.m_hPlayer;
         if (player.m_iTeamNum == TEAM_BLUE) then
-            pcall(entity.Remove, entity);
+            pcall(CEntity.Remove, entity);
         end
     end, 1)
 end
@@ -1129,6 +1133,12 @@ function OnPlayerKey(player, key)
 				
 				player:AddCond(TF_COND_CANNOT_SWITCH_FROM_MELEE);
 				
+				-- Fake an attack animation for other players
+				local penalty = wep:GetAttributeValue("damage penalty") or 1;
+				wep:SetAttributeValue("damage penalty", 0);
+				wep:RunScriptCode("self.PrimaryAttack()");
+				timer.Create(0.3, function() wep:SetAttributeValue("damage penalty", penalty); end, 1);
+				
 				local t = CurTime() + 999;
 				player:PlayVMSequence(11, 1, t, t);
 				
@@ -1264,16 +1274,22 @@ function OnPlayerKeyRelease(player, key)
 	if (key == IN_RELOAD and IsValid(player._touchingpickup)) then
 		local entity = player._touchingpickup;
 		
-		player:GiveLoadout(entity._cosmetics, entity._weapons, entity._class, entity._ignoreclass);
-		playerdata.hp_itemname      = entity._itemname;
-		playerdata.hp_cosmetics     = entity._cosmetics;
-		playerdata.hp_weapons       = entity._weapons;
-		playerdata.hp_ignoreclass   = entity._ignoreclass;
-		playerdata.hp_class         = entity._class;
+		player:Regenerate();
 		
-		player:PlaySoundToSelf("player/recharged.wav");
-		player:Print(PRINT_TARGET_CENTER, "");
-		entity:Remove()
+		-- Next frame so regenerate doesn't override this
+		timer.Create(0.015, function()
+			player:GiveLoadout(entity._cosmetics, entity._weapons, entity._class, entity._ignoreclass);
+			
+			playerdata.hp_itemname      = entity._itemname;
+			playerdata.hp_cosmetics     = entity._cosmetics;
+			playerdata.hp_weapons       = entity._weapons;
+			playerdata.hp_ignoreclass   = entity._ignoreclass;
+			playerdata.hp_class         = entity._class;
+			
+			player:PlaySoundToSelf("player/recharged.wav");
+			player:Print(PRINT_TARGET_CENTER, "");
+			entity:Remove()
+		end, 1);
 
     -- Mouse2
     elseif (key == IN_ATTACK2) then
@@ -1741,6 +1757,7 @@ function OnBotDeath(bot)
 	local itemname            = nil;
 	local itempos             = Vector(0, 0, 0);
 	local itemang             = Vector(0, 0, 0);
+	local itemscale           = 1;
 	local cosmetics           = nil;
 	local cosmetic_attributes = false;
 	local ignoreclass         = false;
@@ -1777,6 +1794,9 @@ function OnBotDeath(bot)
 				print("Hat Pickup ERROR -- INVALID ITEMANG VALUE; CANNOT ASSIGN TO VECTOR: ".. line);
 			end
 			
+		elseif (TagStarts(tag, TAG_ITEMSCALE)) then
+			itemscale = string.sub(tag, #TAG_ITEMSCALE + 2);
+			
 		elseif (TagStarts(tag, TAG_LOADOUT_START)) then
 			local slot = TAG_LOADOUT_SLOT_MAP[tag];
 			if (not slot) then
@@ -1800,7 +1820,15 @@ function OnBotDeath(bot)
 	end
 	
 	-- Don't bother if we don't find hp_itemname tag
-	if (not itemname) then return; end
+	if (not itemname or itemname == "") then return; end
+	
+	-- Or if the item isn't valid
+	local item = bot:GetPlayerItemByName(itemname);
+	if (not IsValid(item)) then return; end
+	
+	-- Or if we couldn't get the model
+	local itemmodel = item:GetItemModelName();
+	if (not itemmodel or itemmodel == "") then return; end
 	
 	-- Get ground position
 	local groundpos = nil;
@@ -1837,19 +1865,13 @@ function OnBotDeath(bot)
 	pickup._weapons        = weapons;
 	pickup._ignoreclass    = ignoreclass;
 	pickup._class          = bot.m_iClass;
-	
-	local item      = bot:GetPlayerItemByName(itemname);
-	local itemmodel = nil;
-	if (IsValid(item)) then
-		itemmodel = item:GetItemModelName();
-	end
 
 	-- Item model display
 	local prop = ents.CreateWithKeys("prop_dynamic", {
 		solid = 0,
 		skin  = 1,
 		model = itemmodel,
-		modelscale = 1.5,
+		modelscale = itemscale,
 		rendermode = 1,
 		DisableBoneFollowers  = true,
 		disablereceiveshadows = true,
@@ -1877,8 +1899,8 @@ function OnBotDeath(bot)
 			pcall(timer.Stop, think_timer);
 			think_timer = nil;
 			
-			pcall(prop.Remove, prop);
-			pcall(particle.Remove, particle);
+			pcall(CEntity.Remove, prop);
+			pcall(CEntity.Remove, particle);
 		end
 	end, 0);
 end
@@ -1910,6 +1932,7 @@ function OnBotDamagedPre(player, damageinfo)
 			
 			return true;
 		end
+		
 	-- Hit by Battle Hatchet (Minecraft falling crit mechanic)
 	elseif (damageinfo.DamageType & DMG_CLUB == DMG_CLUB and damageinfo.Weapon and
 			damageinfo.Weapon:GetAttributeValue("back headshot") == 1) then
@@ -1937,6 +1960,14 @@ function OnBotDamagedPre(player, damageinfo)
 		end
 		
 		damageinfo.Damage = damageinfo.Damage * mod;
+		return true;
+		
+	-- Hit by wrap assassin ball
+	elseif (damageinfo.DamageCustom == TF_DMG_CUSTOM_BASEBALL and damageinfo.Weapon and
+			damageinfo.Weapon.m_iItemDefinitionIndex == 648) then
+			
+		-- Ornaments get crits
+		damageinfo.DamageType = damageinfo.DamageType | DMG_CRITICAL;
 		return true;
 	end
 end

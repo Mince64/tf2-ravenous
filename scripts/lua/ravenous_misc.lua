@@ -55,8 +55,8 @@ end
 -------------
 
 -- Grab the CEntity table
-local _       = Entity("info_target", false, false);
-local CEntity = getmetatable(_);
+local _ = Entity("info_target", false, false);
+CEntity = getmetatable(_);
 _:Remove();
 
 -------------
@@ -858,6 +858,12 @@ function PlayerParry(player, wep, viewmodel, idleseq, inspectseq, playbackrate, 
 	if (viewmodel.m_nSequence == idleseq and curtime >= wep.m_flNextPrimaryAttack) then
 		player:AddCond(TF_COND_CANNOT_SWITCH_FROM_MELEE, 1);
 		player:PlaySoundToSelf("weapons/demo_sword_swing"..math.random(1,3)..".wav");
+		
+		-- Fake an attack animation for other players
+		local penalty = wep:GetAttributeValue("damage penalty") or 1;
+		wep:SetAttributeValue("damage penalty", 0);
+		wep:RunScriptCode("self.PrimaryAttack()");
+		timer.Create(0.3, function() wep:SetAttributeValue("damage penalty", penalty); end, 1);
 		
 		wep.m_flTimeWeaponIdle     = curtime + idletime;
 		wep.m_flNextPrimaryAttack  = curtime + attacktime;
